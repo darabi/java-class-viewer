@@ -42,7 +42,7 @@ public class PluginManager {
     private static void loadPlugins() {
         File pluginFolder = new File(PLUGIN_DIR);
         File pluginFiles[];
-        String pluginDescClassName;
+        String pluginDescClassName = null;
 
         if (pluginFolder.exists() == false) {
             // The plugin folder does not exist
@@ -52,7 +52,6 @@ public class PluginManager {
         pluginFiles = pluginFolder.listFiles();
         for (File plguinFile : pluginFiles) {
             if (plguinFile.isFile() & plguinFile.getName().toLowerCase().endsWith(".jar")) {
-                pluginDescClassName = null;
                 try {
                     JarFile jar = new JarFile(plguinFile);
                     if (jar == null) {
