@@ -7,7 +7,6 @@
 package org.freeinternals.commonlib.ui;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 
 /**
  *

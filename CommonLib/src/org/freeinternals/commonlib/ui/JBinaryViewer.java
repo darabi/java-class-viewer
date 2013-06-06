@@ -19,6 +19,9 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.SpringLayout;
+import org.freeinternals.commonlib.ui.binviewer.JAsciiDataViewer;
+import org.freeinternals.commonlib.ui.binviewer.JRawDataViewer;
+import org.freeinternals.commonlib.ui.binviewer.JRowViewer;
 
 /**
  *
@@ -28,16 +31,16 @@ import javax.swing.SpringLayout;
 public class JBinaryViewer extends JPanel {
 
     private static final long serialVersionUID = 4876543219876500005L;
-    protected static final Font font = new Font(Font.DIALOG_INPUT, Font.PLAIN, 14);
-    protected static final int ITEM_WIDTH = 8;
-    protected static final int ITEM_WIDTH_HALF = 4;
-    protected static final int DATA_ITEM_WIDTH = ITEM_WIDTH * 3;
-    protected static final int ITEM_HEIGHT = 20;
-    protected static final int ROW_ITEM_MAX = 16;
-    protected static final int ROW_ITEM_MAX_INDEX = ROW_ITEM_MAX - 1;
-    private final _JRowViewer rowViewer;
-    private final _JRawDataViewer rawViewer;
-    private final _JAsciiDataViewer asciiViewer;
+    public static final Font font = new Font(Font.DIALOG_INPUT, Font.PLAIN, 14);
+    public static final int ITEM_WIDTH = 8;
+    public static final int ITEM_WIDTH_HALF = 4;
+    public static final int DATA_ITEM_WIDTH = ITEM_WIDTH * 3;
+    public static final int ITEM_HEIGHT = 20;
+    public static final int ROW_ITEM_MAX = 16;
+    public static final int ROW_ITEM_MAX_INDEX = ROW_ITEM_MAX - 1;
+    private final JRowViewer rowViewer;
+    private final JRawDataViewer rawViewer;
+    private final JAsciiDataViewer asciiViewer;
     private byte[] data = null;
     private static final int ROW_EMPTYROW_COUNT = 10;
     private JScrollBar vBar;
@@ -70,10 +73,10 @@ public class JBinaryViewer extends JPanel {
 
         panel.setLayout(panelLayout);
 
-        this.rowViewer = new _JRowViewer();
-        this.rawViewer = new _JRawDataViewer();
+        this.rowViewer = new JRowViewer();
+        this.rawViewer = new JRawDataViewer();
         this.rawViewer.addKeyListener(new KeyboardAdapter());
-        this.asciiViewer = new _JAsciiDataViewer();
+        this.asciiViewer = new JAsciiDataViewer();
         this.asciiViewer.addKeyListener(new KeyboardAdapter());
 
         panel.add(this.rowViewer);
@@ -83,17 +86,17 @@ public class JBinaryViewer extends JPanel {
         panelLayout.putConstraint(SpringLayout.WEST, this.rowViewer, 2, SpringLayout.WEST, panel);
         panelLayout.putConstraint(SpringLayout.NORTH, this.rowViewer, 2, SpringLayout.NORTH, panel);
         panelLayout.putConstraint(SpringLayout.SOUTH, this.rowViewer, -4, SpringLayout.SOUTH, panel);
-        panelLayout.putConstraint(SpringLayout.EAST, this.rowViewer, _JRowViewer.WIDTH_VALUE, SpringLayout.WEST, panel);
+        panelLayout.putConstraint(SpringLayout.EAST, this.rowViewer, JRowViewer.WIDTH_VALUE, SpringLayout.WEST, panel);
 
-        left = 2 + _JRowViewer.WIDTH_VALUE + 2;
-        right = left + _JRawDataViewer.WIDTH_VALUE;
+        left = 2 + JRowViewer.WIDTH_VALUE + 2;
+        right = left + JRawDataViewer.WIDTH_VALUE;
         panelLayout.putConstraint(SpringLayout.WEST, this.rawViewer, left, SpringLayout.WEST, panel);
         panelLayout.putConstraint(SpringLayout.NORTH, this.rawViewer, 2, SpringLayout.NORTH, panel);
         panelLayout.putConstraint(SpringLayout.SOUTH, this.rawViewer, -4, SpringLayout.SOUTH, panel);
         panelLayout.putConstraint(SpringLayout.EAST, this.rawViewer, right, SpringLayout.WEST, panel);
 
         left = right + 2;
-        right = left + _JAsciiDataViewer.WIDTH_VALUE;
+        right = left + JAsciiDataViewer.WIDTH_VALUE;
         panelLayout.putConstraint(SpringLayout.WEST, this.asciiViewer, left, SpringLayout.WEST, panel);
         panelLayout.putConstraint(SpringLayout.NORTH, this.asciiViewer, 2, SpringLayout.NORTH, panel);
         panelLayout.putConstraint(SpringLayout.SOUTH, this.asciiViewer, -4, SpringLayout.SOUTH, panel);

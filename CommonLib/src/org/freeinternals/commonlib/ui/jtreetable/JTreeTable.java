@@ -38,13 +38,13 @@
 package org.freeinternals.commonlib.ui.jtreetable;
 
 import java.awt.*;
+import java.awt.event.*;
+import java.util.EventObject;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
-import javax.swing.tree.*;
 import javax.swing.table.*;
-import java.awt.event.*;
-import java.util.EventObject;
+import javax.swing.tree.*;
 
 /**
  * This example shows how to create a simple JTreeTable component, 

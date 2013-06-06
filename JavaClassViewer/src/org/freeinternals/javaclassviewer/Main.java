@@ -33,10 +33,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import org.freeinternals.classfile.ui.JSplitPaneClassFile;
-import org.freeinternals.classfile.ui.JTreeNodeZipFile;
-import org.freeinternals.classfile.ui.JTreeZipFile;
-import org.freeinternals.classfile.ui.Tool;
+import org.freeinternals.javaclassviewer.ui.JSplitPaneClassFile;
+import org.freeinternals.javaclassviewer.ui.JTreeNodeZipFile;
+import org.freeinternals.javaclassviewer.ui.JTreeZipFile;
+import org.freeinternals.javaclassviewer.ui.Tool;
 import org.freeinternals.commonlib.ui.JFrameTool;
 import org.freeinternals.commonlib.ui.JPanelForTree;
 
