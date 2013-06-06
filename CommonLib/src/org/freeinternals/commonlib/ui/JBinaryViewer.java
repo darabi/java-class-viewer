@@ -31,7 +31,7 @@ import org.freeinternals.commonlib.ui.binviewer.JRowViewer;
 public class JBinaryViewer extends JPanel {
 
     private static final long serialVersionUID = 4876543219876500005L;
-    public static final Font font = new Font(Font.DIALOG_INPUT, Font.PLAIN, 14);
+    public static final Font FONT = new Font(Font.DIALOG_INPUT, Font.PLAIN, 14);
     public static final int ITEM_WIDTH = 8;
     public static final int ITEM_WIDTH_HALF = 4;
     public static final int DATA_ITEM_WIDTH = ITEM_WIDTH * 3;
@@ -50,7 +50,7 @@ public class JBinaryViewer extends JPanel {
 
     public JBinaryViewer() {
         this.setLayout(new BorderLayout());
-        this.setFont(JBinaryViewer.font);
+        this.setFont(JBinaryViewer.FONT);
         this.addComponentListener(new ComponentResizedAdapter());
         this.addMouseWheelListener(new MouseWheelAdapter());
 
@@ -102,7 +102,6 @@ public class JBinaryViewer extends JPanel {
         panelLayout.putConstraint(SpringLayout.SOUTH, this.asciiViewer, -4, SpringLayout.SOUTH, panel);
         panelLayout.putConstraint(SpringLayout.EAST, this.asciiViewer, right, SpringLayout.WEST, panel);
 
-        //panel.setMinimumSize(new Dimension(right, 1));                        // Temp - Study to add h-Bar Automatically
         this.add(panel, BorderLayout.CENTER);
     }
 
@@ -114,15 +113,14 @@ public class JBinaryViewer extends JPanel {
         this.data = data.clone();
 
         // Calc the max row count
-        this.rowMax = this._getRowMax();
-
+        this.rowMax = this.getRowMax();
         this.vBar.setMaximum(this.rowMax + JBinaryViewer.ROW_EMPTYROW_COUNT);
         this.vBar.setValue(0);
 
         this.updateViewContent();
     }
 
-    private int _getRowMax() {
+    private int getRowMax() {
         return (this.data != null)
                 ? this.getRowCount(this.data.length)
                 : 0;
@@ -205,7 +203,7 @@ public class JBinaryViewer extends JPanel {
         this.selectedStartIndex = selectionStart;
         this.selectedLength = length;
 
-        this._ensureVisible(selectionStart);
+        this.ensureVisible(selectionStart);
         this.updateSelection();
     }
 
@@ -233,7 +231,7 @@ public class JBinaryViewer extends JPanel {
      *
      * @param startPos the start position of the byte(s) to be visible
      */
-    private void _ensureVisible(final int startPos) {
+    private void ensureVisible(final int startPos) {
         if ((this.data == null) || (startPos < 0) || (this.data.length < (startPos - 1))) {
             return;
         }
@@ -288,7 +286,6 @@ public class JBinaryViewer extends JPanel {
                     break;
 
                 case KeyEvent.VK_END:
-                    System.out.println("End");
                     JBinaryViewer.this.vBar.setValue(JBinaryViewer.this.vBar.getMaximum());
                     break;
 

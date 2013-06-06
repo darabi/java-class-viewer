@@ -6,9 +6,7 @@
  */
 package org.freeinternals.commonlib.ui.binviewer;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import org.freeinternals.commonlib.ui.JBinaryViewer;
 
 /**
@@ -16,89 +14,60 @@ import org.freeinternals.commonlib.ui.JBinaryViewer;
  * @author Amos Shi
  * @since JDK 6.0
  */
-public class JAsciiDataViewer extends JTextArea {
+public class JAsciiDataViewer extends JTextPane {
 
     private static final long serialVersionUID = 4876543219876500004L;
-    public static final int WIDTH_VALUE = 130;
+    public static final int WIDTH_VALUE = 231;
+    private byte[] Data = null;
     private int selectedStartIndex = 0;
     private int selectedLength = 0;
 
     public JAsciiDataViewer() {
         super();
-        this.setFont(JBinaryViewer.font);
         this.setEditable(false);
+        this.setBorder(null);
+        this.setContentType("text/html");
     }
 
     public void setData(final byte[] data) {
-        this.setText(null);
-        if (data == null) {
-            return;
-        }
-
-        final int dataLength = data.length;
-        int breakCounter = 0;
-        for (int i = 0; i < dataLength; i++) {
-            this.append(this.getAsciiStringValue(data[i]));
-            breakCounter++;
-
-            if (breakCounter > JBinaryViewer.ROW_ITEM_MAX_INDEX) {
-                this.append("\n");
-                breakCounter = 0;
-            }
-        }
-    }
-
-    private String getAsciiStringValue(final byte b) {
-        String s = ".";
-
-        if (((b > 32) && (b < 127)) ||
-                ((b > 146) && (b < 165))) {
-            s = new Character((char) b).toString();
-        }
-
-        return s;
+        this.Data = data;
+        this.updateContent();
     }
 
     public void setSelection(final int startIndex, final int length) {
         this.selectedStartIndex = startIndex;
         this.selectedLength = length;
-
-        this.repaint();
+        this.updateContent();
     }
 
-    @Override
-    public void paintComponent(final Graphics g) {
-        super.paintComponent(g);
-
-        // Paint Selectd Items
-        if ((this.selectedLength < 1) || (this.selectedStartIndex < 0)) {
+    private void updateContent() {
+        this.setText(null);
+        if (this.Data == null) {
             return;
         }
 
-        final int endIndex = this.selectedStartIndex + this.selectedLength;
-        int row;
-        int column;
-        for (int i = this.selectedStartIndex; i < endIndex; i++) {
-            // calculate row and length
-            column = i;
-            row = 0;
-            while (column >= JBinaryViewer.ROW_ITEM_MAX) {
-                column -= JBinaryViewer.ROW_ITEM_MAX;
-                row = row + 1;
+        StringBuilder sb = new StringBuilder(4096);
+        sb.append(HTMLKit.Start());
+
+        final int dataLength = this.Data.length;
+        int breakCounter = 0;
+        for (int i = 0; i < dataLength; i++) {
+            if (this.selectedLength > 0
+                    && i >= this.selectedStartIndex
+                    && i < this.selectedStartIndex + this.selectedLength) {
+                sb.append(HTMLKit.Span(HTMLKit.getByteText(this.Data[i]), HTMLKit.FONT_COLOR_YELLOW));
+            } else {
+                sb.append(HTMLKit.Span(HTMLKit.getByteText(this.Data[i])));
             }
+            breakCounter++;
 
-            this.paintDataRect(g, row, column);
+            if (breakCounter > JBinaryViewer.ROW_ITEM_MAX_INDEX) {
+                sb.append(HTMLKit.NewLine());
+                breakCounter = 0;
+            }
         }
-    }
 
-    private void paintDataRect(final Graphics g, final int row, final int column) {
-        if ((row > -1) && (column > -1)) {
-            g.setColor(Color.ORANGE);
-            g.drawRect(
-                    JBinaryViewer.ITEM_WIDTH * column,
-                    JBinaryViewer.ITEM_HEIGHT * row,
-                    JBinaryViewer.ITEM_WIDTH,
-                    JBinaryViewer.ITEM_HEIGHT);
-        }
+        sb.append(HTMLKit.End());
+        this.setText(sb.toString());
     }
 }

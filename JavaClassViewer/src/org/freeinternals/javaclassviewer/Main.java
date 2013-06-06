@@ -33,12 +33,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import org.freeinternals.commonlib.ui.JFrameTool;
+import org.freeinternals.commonlib.ui.JPanelForTree;
 import org.freeinternals.javaclassviewer.ui.JSplitPaneClassFile;
 import org.freeinternals.javaclassviewer.ui.JTreeNodeZipFile;
 import org.freeinternals.javaclassviewer.ui.JTreeZipFile;
 import org.freeinternals.javaclassviewer.ui.Tool;
-import org.freeinternals.commonlib.ui.JFrameTool;
-import org.freeinternals.commonlib.ui.JPanelForTree;
 
 /**
  *
@@ -153,16 +153,12 @@ public final class Main extends JFrame {
         final FileNameExtensionFilter filterClass = new FileNameExtensionFilter("Class File", "class");
         final FileNameExtensionFilter filterJar = new FileNameExtensionFilter("Jar File", "jar");
         final JFileChooser chooser = new JFileChooser();
-        chooser.addChoosableFileFilter(filterClass);
         chooser.addChoosableFileFilter(filterJar);
+        chooser.addChoosableFileFilter(filterClass);
 
         final int returnVal = chooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final File file = chooser.getSelectedFile();
-
-            // Debug
-            //System.out.println("You chose to open this file: " + file.getName()); // file.getPath()
-
             this.clearContent();
             if (file.getName().endsWith(".jar")) {
                 this.open_JarFile(chooser.getSelectedFile());
