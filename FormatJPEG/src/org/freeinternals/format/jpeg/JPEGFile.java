@@ -78,7 +78,7 @@ public class JPEGFile extends FileFormat{
 
     private void parse() throws IOException, FileFormatException {
         Marker marker;
-        PosDataInputStream posDataInputStream = new PosDataInputStream(new PosByteArrayInputStream(this.fileByteArray));
+        PosDataInputStream posDataInputStream = new PosDataInputStream(new PosByteArrayInputStream(super.fileByteArray));
 
         // Marker - SOI
         final int soi = posDataInputStream.readUnsignedShort();

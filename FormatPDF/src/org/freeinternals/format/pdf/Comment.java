@@ -7,13 +7,11 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 /**
  * See
  * <pre>PDF 32000-1:2008</pre>
- * <code>7.5.5</code>: File Trailer.
+ * <code>7.2.3</code>: Comments.
  *  
  * @author Amos Shi
  */
-public class Trailer extends FileComponent implements GenerateTreeNode{
-
-    static final String SIGNATURE = "trailer";
+public class Comment extends FileComponent implements GenerateTreeNode{
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
     }

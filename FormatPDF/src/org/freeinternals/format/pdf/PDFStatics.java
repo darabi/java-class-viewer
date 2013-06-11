@@ -6,13 +6,13 @@ package org.freeinternals.format.pdf;
  */
 public class PDFStatics {
 
-    static final byte[] END_OF_FILE = {'%', '%', 'E', 'O', 'F'};
-    static final byte[] START_XREF = {'s','t','a','r','t','x','r','e','f'};
-
     /**
-     * See <pre>PDF 32000-1:2008</pre> <code>7.2.2</code>: Table 1 – White-space characters.
+     * See
+     * <pre>PDF 32000-1:2008</pre>
+     * <code>7.2.2</code>: Table 1 – White-space characters.
      */
     public static class WhiteSpace {
+
         /**
          * Null (NUL).
          */
@@ -37,5 +37,60 @@ public class PDFStatics {
          * SPACE (SP).
          */
         public static final byte SP = 0x20;
+    }
+
+    /**
+     * See
+     * <pre>PDF 32000-1:2008</pre>
+     * <code>7.2.2</code>: Table 2 – Delimiter characters.
+     */
+    public static class DelimiterCharacter {
+        /**
+         * LEFT PARENTHESIS: <code>(</code>. 
+         */
+        public static final byte LP = 0x28;
+        /**
+         * RIGHT PARENTHESIS: <code>)</code>. 
+         */
+        public static final byte RP = 0x29;
+        /**
+         * LESS-THAN SIGN: <code>&#60;</code>. 
+         */
+        public static final byte LT = 0x3C;
+        /**
+         * GREATER-THAN SIGN: <code>&#62;</code>. 
+         */
+        public static final byte GT = 0x3E;
+        /**
+         * LEFT SQUARE BRACKET: <code>[</code>. 
+         */
+        public static final byte LS = 0x5B;
+        /**
+         * RIGHT SQUARE BRACKET: <code>]</code>. 
+         */
+        public static final byte RS = 0x5D;
+        /**
+         * LEFT CURLY BRACKET: <code>{</code>. 
+         */
+        public static final byte LC = 0x7B;
+        /**
+         * RIGHT CURLY BRACKET: <code>}</code>. 
+         */
+        public static final byte RC = 0x7D;
+        /**
+         * SOLIDUS: <code>/</code>. 
+         */
+        public static final byte SO = 0x2F;
+        /**
+         * PERCENT SIGN: <code>%</code>. 
+         */
+        public static final byte PS = 0x25;
+        /**
+         * PERCENT SIGN: <code>%</code>. 
+         * 
+         * @see #PS
+         */
+        public static final char PS_CHAR = '%';
+        
     }
 }

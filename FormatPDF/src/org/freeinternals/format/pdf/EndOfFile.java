@@ -11,9 +11,9 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
  *  
  * @author Amos Shi
  */
-public class Trailer extends FileComponent implements GenerateTreeNode{
+public class EndOfFile extends FileComponent implements GenerateTreeNode{
 
-    static final String SIGNATURE = "trailer";
+    static final String SIGNATURE = "%%EOF";
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
     }

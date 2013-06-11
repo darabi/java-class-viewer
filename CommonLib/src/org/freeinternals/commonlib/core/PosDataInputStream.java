@@ -200,6 +200,8 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     }
 
     /**
+     * Set the current position back for <code>i</code> positions.
+     * 
      * This method supports {@link PosByteArrayInputStream} only, nothing will
      * do for other input stream types.
      *

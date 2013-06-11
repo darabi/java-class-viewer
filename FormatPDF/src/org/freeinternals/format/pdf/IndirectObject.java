@@ -7,13 +7,14 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 /**
  * See
  * <pre>PDF 32000-1:2008</pre>
- * <code>7.5.5</code>: File Trailer.
+ * <code>7.3.10</code>: Indirect Object.
  *  
  * @author Amos Shi
  */
-public class Trailer extends FileComponent implements GenerateTreeNode{
+public class IndirectObject extends FileComponent implements GenerateTreeNode{
 
-    static final String SIGNATURE = "trailer";
+    static final String SIGNATURE_START = "obj";
+    static final String SIGNATURE_END = "endobj";
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
     }
