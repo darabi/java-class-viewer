@@ -26,22 +26,19 @@ import org.freeinternals.format.FileFormatException;
  * Reference</a>
  */
 public class PDFFile extends FileFormat {
-    
+
     private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(100));
-    
+
     public PDFFile(final File file) throws IOException, FileFormatException {
         super(file);
         this.parse();
     }
-    
+
     private void parse() throws IOException, FileFormatException {
         PosDataInputStream stream = new PosDataInputStream(new PosByteArrayInputStream(super.fileByteArray));
-        System.out.println("PDF File Length = " + super.fileByteArray.length);
 
         // File Header - Verify if this is an PDF file
-        System.out.println(Header.PDF_HEADER.length());
         String pdfHeader = stream.readASCII(Header.PDF_HEADER.length());
-        System.out.println("PDF Header read result: " + pdfHeader);
         if (!Header.PDF_HEADER.equals(pdfHeader)) {
             throw new FileFormatException(String.format(
                     "This is not a PDF file. Expeted file header [%s], but it is [%s].",
@@ -51,37 +48,39 @@ public class PDFFile extends FileFormat {
         Header header = new Header(stream);
         this.components.add(header);
 
-
         // Read PDF Components
         String line;
         int counter = 0;
-        while (stream.getPos() < (this.fileByteArray.length - 1)) {
+        while (stream.hasNext()) {
             line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF);
             if (line.length() == 0) {
                 // Error
                 break;
             }
-            
-            if (line.equalsIgnoreCase(EndOfFile.SIGNATURE)) {                   // %%EOF
-            } else if (line.charAt(0) == PDFStatics.DelimiterCharacter.PS_CHAR) {
+
+            if (line.equalsIgnoreCase(EndOfFile.SIGNATURE)) {                     // %%EOF
+            } else if (line.charAt(0) == PDFStatics.DelimiterCharacter.PS_CHAR) { // %
                 // This is Comment line
-            } else if (line.endsWith(IndirectObject.SIGNATURE_START)) {         // obj
-            } else if (line.equalsIgnoreCase(CrossReferenceTable.SIGNATURE)){   // xref
-            } else if (line.equalsIgnoreCase(Trailer.SIGNATURE)){               // trailer
-            } else if (line.equalsIgnoreCase(StartXRef.SIGNATURE)){             // startxref
+                this.components.add(new Comment(stream, line));
+            } else if (line.endsWith(IndirectObject.SIGNATURE_START)) {           // obj
+                this.components.add(new IndirectObject(stream, line));
+            } else if (line.equalsIgnoreCase(CrossReferenceTable.SIGNATURE)) {     // xref
+                this.components.add(new CrossReferenceTable(stream, line));
+            } else if (line.equalsIgnoreCase(Trailer.SIGNATURE)) {                 // trailer
+            } else if (line.equalsIgnoreCase(StartXRef.SIGNATURE)) {               // startxref
             }
-            
+
             counter++;
-            if (counter >=1) {
+            if (counter >= 19) {
                 break;
             }
         }
     }
-    
+
     public String getContentTabName() {
         return "PDF File";
     }
-    
+
     public void generateTreeNode(DefaultMutableTreeNode root) {
         for (FileComponent comp : this.components) {
             if (comp instanceof GenerateTreeNode) {

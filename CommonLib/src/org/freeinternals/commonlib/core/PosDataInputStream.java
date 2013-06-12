@@ -18,11 +18,15 @@ import org.freeinternals.commonlib.util.Tool;
  */
 public class PosDataInputStream extends DataInputStream implements DataInputEx {
 
-    /** Offset of the 1st byte */
+    /**
+     * Offset of the 1st byte
+     */
     private int offset = 0;
 
-    /** Creates a new instance of PosDataInputStream
-     * @param in 
+    /**
+     * Creates a new instance of PosDataInputStream
+     *
+     * @param in
      */
     public PosDataInputStream(final PosByteArrayInputStream in) {
         super(in);
@@ -35,8 +39,8 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
 
     /**
      * Get the absolute position of the starting point of the buffer.
-     * 
-     * @return  buffer absolute position
+     *
+     * @return buffer absolute position
      */
     public int getOffset() {
         return this.offset;
@@ -45,9 +49,9 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     /**
      * Get current absolute position of the file.
      *
-     * @return  The index of the next character to read from the input stream
-     *          buffer, or <code>-1</code> if there is internal error, the 
-     *          input stream is not <code>PosByteArrayInputStream</code>.
+     * @return The index of the next character to read from the input stream
+     * buffer, or <code>-1</code> if there is internal error, the input stream
+     * is not <code>PosByteArrayInputStream</code>.
      */
     public int getPos() {
         int pos = -1;
@@ -149,7 +153,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     }
 
     public String readASCII() throws IOException {
-        return this.readASCIIUntil((byte)0);
+        return this.readASCIIUntil((byte) 0);
     }
 
     public String readASCIIUntil(byte end) throws IOException {
@@ -200,8 +204,9 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     }
 
     /**
-     * Set the current position back for <code>i</code> positions.
-     * 
+     * Set the current position back for
+     * <code>i</code> positions.
+     *
      * This method supports {@link PosByteArrayInputStream} only, nothing will
      * do for other input stream types.
      *
@@ -221,10 +226,15 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     }
 
     /**
+     * Backward current position until the byte value
+     * <code>b</code>.
+     *
      * This method supports {@link PosByteArrayInputStream} only as input stream
-     * only, otherwise <code>-1</code> is returned.
+     * only, otherwise
+     * <code>-1</code> is returned.
      *
      * @see PosByteArrayInputStream
+     * @return the new position, or -1 if <code>b</code> not found
      */
     public int backwardTo(byte b) {
         int result = -1;
@@ -248,8 +258,44 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     }
 
     /**
+     * Forward current position until the byte value
+     * <code>b</code>.
+     *
      * This method supports {@link PosByteArrayInputStream} only as input stream
-     * only, otherwise <code>-1</code> is returned.
+     * only, otherwise
+     * <code>-1</code> is returned.
+     *
+     * @see PosByteArrayInputStream
+     * @return the new position, or -1 if <code>b</code> not found
+     */
+    public int forwardTo(byte b) {
+        int result = -1;
+
+        if (this.in instanceof PosByteArrayInputStream) {
+            PosByteArrayInputStream posIn = ((PosByteArrayInputStream) this.in);
+            byte[] buf = posIn.getBuf();
+            for (int i = posIn.getPos(); i < buf.length; i++) {
+                if (buf[i] == b) {
+                    result = i;
+                    break;
+                }
+            }
+
+            if (result != -1) {
+                posIn.setPos(result);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Backward current position until the byte array value
+     * <code>b</code>.
+     *
+     * This method supports {@link PosByteArrayInputStream} only as input stream
+     * only, otherwise
+     * <code>-1</code> is returned.
      *
      * @see PosByteArrayInputStream
      */
@@ -302,5 +348,15 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         if (this.in instanceof PosByteArrayInputStream) {
             ((PosByteArrayInputStream) this.in).setPos(position);
         }
+    }
+
+    /**
+     * Whether current location is the end or not.
+     *
+     * @return true Still has next byte to be read; false Current location is
+     * the end
+     */
+    public boolean hasNext() {
+        return this.getPos() < (this.getBuf().length - 1);
     }
 }

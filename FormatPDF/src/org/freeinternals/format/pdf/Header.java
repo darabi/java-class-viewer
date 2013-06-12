@@ -19,6 +19,17 @@ public class Header extends FileComponent implements GenerateTreeNode {
      * a digit between 0 and 7.
      */
     public static final String PDF_HEADER = "%PDF-";
+    /**
+     * PDF file version. Example:
+     * <code>1.0</code>,
+     * <code>1.1</code>,
+     * <code>1.2</code>,
+     * <code>1.3</code>,
+     * <code>1.4</code>,
+     * <code>1.5</code>,
+     * <code>1.6</code>,
+     * <code>1.7</code>, etc.
+     */
     public final String Version;
 
     Header(PosDataInputStream stream) throws IOException {
@@ -29,22 +40,24 @@ public class Header extends FileComponent implements GenerateTreeNode {
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
         JTreeNodeFileComponent nodeComp = new JTreeNodeFileComponent(
-                    this.getStartPos(),
-                    super.length,
-                    String.format("PDF Header: version = %s", this.Version));
-        nodeComp.setDescription(Descriptions.getString(Descriptions.KEY_PDF_FILE_HEADER));
+                this.getStartPos(),
+                super.length,
+                String.format("PDF Header: version = %s", this.Version));
+        nodeComp.setDescription(Descriptions.getString(Descriptions.PDF_FILE_HEADER));
         DefaultMutableTreeNode treenodePDFHeader = new DefaultMutableTreeNode(nodeComp);
 
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 this.startPos,
                 PDF_HEADER.length(),
-                "PDF Signature"
-                )));
+                "PDF Signature")));
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 this.startPos + PDF_HEADER.length(),
                 this.Version.length(),
-                this.Version
-                )));
+                "PDF Version = " + this.Version)));
+        treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
+                this.startPos + PDF_HEADER.length() + this.Version.length(),
+                1,
+                "LINE FEED (LF)")));
         parentNode.add(treenodePDFHeader);
     }
 }
