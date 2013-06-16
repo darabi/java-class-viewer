@@ -20,15 +20,15 @@ import org.freeinternals.format.FileFormatException;
 public class CrossReferenceTable extends FileComponent implements GenerateTreeNode {
 
     static final String SIGNATURE = "xref";
-    public final List<CrossReferenceSubsection> Subsections = new ArrayList<CrossReferenceSubsection>(5);
+    public final List<Subsection> Subsections = new ArrayList<Subsection>(5);
 
     CrossReferenceTable(PosDataInputStream stream, String line) throws IOException, FileFormatException {
         super.startPos = stream.getPos() - line.length() - 1;
         this.parse(stream);
 
         // The Length
-        super.length = line.length();
-        for (CrossReferenceSubsection subsection : Subsections) {
+        super.length = line.length() + 1;
+        for (Subsection subsection : Subsections) {
             super.length += subsection.getLength();
         }
     }
@@ -41,7 +41,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
                 stream.backward(Trailer.SIGNATURE.length());
                 break;
             }
-            this.Subsections.add(new CrossReferenceSubsection(stream, line));
+            this.Subsections.add(new Subsection(stream, line));
         } while (stream.hasNext());
     }
 
@@ -52,6 +52,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
                 "Cross Reference Table");
         nodeComp.setDescription(Descriptions.getString(Descriptions.PDF_CROSS_REFERENCE_TABLE));
         DefaultMutableTreeNode nodeCRT = new DefaultMutableTreeNode(nodeComp);
+        parentNode.add(nodeCRT);
 
         int pos = this.startPos;
         nodeCRT.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
@@ -64,12 +65,12 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
                 1,
                 "LINE FEED (LF)")));
 
-        for (CrossReferenceSubsection subsection : Subsections) {
+        for (Subsection subsection : Subsections) {
             subsection.generateTreeNode(nodeCRT);
         }
     }
 
-    public static class CrossReferenceSubsection extends FileComponent implements GenerateTreeNode {
+    public static class Subsection extends FileComponent implements GenerateTreeNode {
 
         /**
          * First object number.
@@ -86,10 +87,10 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
         /**
          * Cross reference entries list.
          */
-        public final List<CrossReferenceEntry> Entries = new ArrayList<CrossReferenceEntry>(20);
+        public final List<Entry> Entries = new ArrayList<Entry>(20);
 
-        CrossReferenceSubsection(PosDataInputStream stream, String line) throws FileFormatException, IOException {
-            super.startPos = stream.getPos();
+        Subsection(PosDataInputStream stream, String line) throws FileFormatException, IOException {
+            super.startPos = stream.getPos() - line.length() - 1;
             this.HeaderLine = line;
 
             String[] subsection_header = line.split(" ");
@@ -103,10 +104,10 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
             this.FirstObjectNumber = Integer.valueOf(subsection_header[0]);
             this.NumberOfEntries = Integer.valueOf(subsection_header[1]);
             for (int i = 0; i < this.NumberOfEntries; i++) {
-                this.Entries.add(new CrossReferenceEntry(stream));
+                this.Entries.add(new Entry(stream));
             }
 
-            super.length = line.length() + this.NumberOfEntries * CrossReferenceEntry.LENGTH;
+            super.length = line.length() + 1 + this.NumberOfEntries * Entry.LENGTH;
         }
 
         public void generateTreeNode(DefaultMutableTreeNode parentNode) {
@@ -115,24 +116,25 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
                     pos,
                     super.length,
                     String.format("Subsection: From %d Length %d", this.FirstObjectNumber, this.NumberOfEntries)));
+            parentNode.add(nodeSS);
 
             nodeSS.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     this.HeaderLine.length(),
-                    "Header: " + this.HeaderLine)));
+                    String.format("Header '%s'", this.HeaderLine))));
             pos += this.HeaderLine.length();
             nodeSS.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     1,
                     "LINE FEED (LF)")));
 
-            for (CrossReferenceEntry entry : Entries) {
+            for (Entry entry : Entries) {
                 entry.generateTreeNode(nodeSS);
             }
         }
     }
 
-    public static class CrossReferenceEntry extends FileComponent implements GenerateTreeNode {
+    public static class Entry extends FileComponent implements GenerateTreeNode {
 
         public static final int LENGTH = 20;
         public static final int OFFSET_LENGTH = 10;
@@ -143,7 +145,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
         public final int GenerationNumber;
         public final char Type;
 
-        CrossReferenceEntry(PosDataInputStream stream) throws IOException {
+        Entry(PosDataInputStream stream) throws IOException {
             super.startPos = stream.getPos();
             super.length = LENGTH;
 
@@ -151,7 +153,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
             stream.skip(1);
             this.GenerationNumber = Integer.valueOf(stream.readASCII(GENERATIONNUMBER_LENGTH));
             stream.skip(1);
-            this.Type = stream.readChar();
+            this.Type = (char) stream.readByte();
             stream.skip(2);
         }
 
@@ -160,12 +162,13 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
             DefaultMutableTreeNode nodeEntry = new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     super.length,
-                    String.format("Entry %d", this.Offset)));
+                    String.format("Entry %010d", this.Offset)));
+            parentNode.add(nodeEntry);
 
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     OFFSET_LENGTH,
-                    String.format("Offset: %d" + this.Offset))));
+                    String.format("Offset: %d", this.Offset))));
             pos += OFFSET_LENGTH;
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
@@ -175,16 +178,17 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     GENERATIONNUMBER_LENGTH,
-                    String.format("Generation Number: %d" + this.GenerationNumber))));
+                    String.format("Generation Number: %d", this.GenerationNumber))));
             pos += GENERATIONNUMBER_LENGTH;
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     1,
                     "Separator")));
+            pos += 1;
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     1,
-                    String.format("Type - %s", String.valueOf(this.Type)))));
+                    String.format("Type - " + Character.toString(this.Type)) )));
             pos += 1;
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,

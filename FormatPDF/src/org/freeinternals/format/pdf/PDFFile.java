@@ -67,11 +67,12 @@ public class PDFFile extends FileFormat {
             } else if (line.equalsIgnoreCase(CrossReferenceTable.SIGNATURE)) {     // xref
                 this.components.add(new CrossReferenceTable(stream, line));
             } else if (line.equalsIgnoreCase(Trailer.SIGNATURE)) {                 // trailer
+                break;
             } else if (line.equalsIgnoreCase(StartXRef.SIGNATURE)) {               // startxref
             }
 
             counter++;
-            if (counter >= 19) {
+            if (counter >= 20) {
                 break;
             }
         }
@@ -82,6 +83,7 @@ public class PDFFile extends FileFormat {
     }
 
     public void generateTreeNode(DefaultMutableTreeNode root) {
+        System.err.println(String.format("Generate Tree Node: Get Component Size: %d", this.components.size()));
         for (FileComponent comp : this.components) {
             if (comp instanceof GenerateTreeNode) {
                 ((GenerateTreeNode) comp).generateTreeNode(root);
