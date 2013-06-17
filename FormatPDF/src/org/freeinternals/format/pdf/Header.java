@@ -34,7 +34,7 @@ public class Header extends FileComponent implements GenerateTreeNode {
 
     Header(PosDataInputStream stream) throws IOException {
         super.startPos = 0;
-        this.Version = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF);
+        this.Version = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
         super.length = stream.getPos() - super.startPos;
     }
 
@@ -57,7 +57,7 @@ public class Header extends FileComponent implements GenerateTreeNode {
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 this.startPos + PDF_HEADER.length() + this.Version.length(),
                 1,
-                "LINE FEED (LF)")));
+                "New Line")));
         parentNode.add(treenodePDFHeader);
     }
 }

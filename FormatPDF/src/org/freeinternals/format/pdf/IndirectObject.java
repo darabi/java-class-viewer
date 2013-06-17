@@ -54,7 +54,7 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
     private void parse(PosDataInputStream stream) throws IOException {
         String line;
         do {
-            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF);
+            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
             if (line != null && line.length() == SIGNATURE_END.length() && SIGNATURE_END.equalsIgnoreCase(line)) {
                 super.length = stream.getPos() - super.startPos;
                 break;
@@ -79,7 +79,7 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         nodeIO.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 1,
-                "LINE FEED (LF)")));
+                "New Line")));
 
         pos += 1;
         int contLen = super.startPos + super.length - pos - (SIGNATURE_END.length() + 1);
@@ -97,7 +97,7 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         nodeIO.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 1,
-                "LINE FEED (LF)")));
+                "New Line")));
 
         parentNode.add(nodeIO);
     }

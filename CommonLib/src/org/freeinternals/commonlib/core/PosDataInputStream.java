@@ -175,6 +175,40 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         return sb.toString();
     }
 
+    public String readASCIIUntil(byte... end) throws IOException {
+        if (end == null || end.length < 1) {
+            throw new IllegalArgumentException("Inalid parameter 'end'.");
+        }
+
+        byte b;
+        StringBuilder sb = new StringBuilder(100);
+
+        do {
+            try {
+                b = this.readByte();
+                if (this._contains(b, end)) {
+                    break;
+                }
+                sb.append((char) b);
+            } catch (EOFException eof) {
+                break;
+            }
+        } while (true);
+
+        return sb.toString();
+    }
+
+    private boolean _contains(byte v, byte[] list) {
+        boolean result = false;
+        for (int i = 0; i < list.length; i++) {
+            if (list[i] == v) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
     public byte[] readBinary() throws IOException {
         int size = this.getBuf().length - this.getPos() + this.offset + 1;
         byte[] big = new byte[size];

@@ -36,9 +36,9 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
     private void parse(PosDataInputStream stream) throws IOException, FileFormatException {
         String line;
         do {
-            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF);
+            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
             if (Trailer.SIGNATURE.equalsIgnoreCase(line)) {
-                stream.backward(Trailer.SIGNATURE.length());
+                stream.backward(Trailer.SIGNATURE.length() + 1);
                 break;
             }
             this.Subsections.add(new Subsection(stream, line));
@@ -63,7 +63,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
         nodeCRT.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 1,
-                "LINE FEED (LF)")));
+                "New Line")));
 
         for (Subsection subsection : Subsections) {
             subsection.generateTreeNode(nodeCRT);

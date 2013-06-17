@@ -40,7 +40,7 @@ public class Comment extends FileComponent implements GenerateTreeNode{
         nodeComment.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 this.startPos + this.Text.length(),
                 1,
-                "LINE FEED (LF)")));
+                "New Line")));
         parentNode.add(nodeComment);
     }
     

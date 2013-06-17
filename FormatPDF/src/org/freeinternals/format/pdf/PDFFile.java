@@ -52,27 +52,30 @@ public class PDFFile extends FileFormat {
         String line;
         int counter = 0;
         while (stream.hasNext()) {
-            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF);
+            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
+            System.out.println("PDFFile: line = " + line);
             if (line.length() == 0) {
                 // Error
                 break;
             }
 
             if (line.equalsIgnoreCase(EndOfFile.SIGNATURE)) {                     // %%EOF
-            } else if (line.charAt(0) == PDFStatics.DelimiterCharacter.PS_CHAR) { // %
-                // This is Comment line
+                this.components.add(new EndOfFile(stream, line));
+            } else if (line.charAt(0) == PDFStatics.DelimiterCharacter.PS_CHAR) { // %, Comment line
                 this.components.add(new Comment(stream, line));
             } else if (line.endsWith(IndirectObject.SIGNATURE_START)) {           // obj
                 this.components.add(new IndirectObject(stream, line));
             } else if (line.equalsIgnoreCase(CrossReferenceTable.SIGNATURE)) {     // xref
                 this.components.add(new CrossReferenceTable(stream, line));
             } else if (line.equalsIgnoreCase(Trailer.SIGNATURE)) {                 // trailer
-                break;
+                this.components.add(new Trailer(stream, line));
             } else if (line.equalsIgnoreCase(StartXRef.SIGNATURE)) {               // startxref
+                this.components.add(new StartXRef(stream, line));
             }
 
             counter++;
-            if (counter >= 20) {
+            System.out.println("Counter: " + counter);
+            if (counter >= 39) {
                 break;
             }
         }
