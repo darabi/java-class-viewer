@@ -49,7 +49,7 @@ public class StartXRef extends FileComponent implements GenerateTreeNode {
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 len,
-                "Offset of last Cross Reference Section" + this.Offset)));
+                String.format("Offset of last Cross Reference Section: %d (%08X)", this.Offset, this.Offset))));
         pos += len;
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,

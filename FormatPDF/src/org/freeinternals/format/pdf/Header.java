@@ -43,7 +43,7 @@ public class Header extends FileComponent implements GenerateTreeNode {
                 this.getStartPos(),
                 super.length,
                 String.format("PDF Header: version = %s", this.Version));
-        nodeComp.setDescription(Descriptions.getString(Descriptions.PDF_FILE_HEADER));
+        nodeComp.setDescription(Texts.getString(Texts.PDF_FILE_HEADER));
         DefaultMutableTreeNode treenodePDFHeader = new DefaultMutableTreeNode(nodeComp);
 
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(

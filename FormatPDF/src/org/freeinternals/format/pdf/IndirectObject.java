@@ -67,7 +67,7 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
                 this.getStartPos(),
                 super.length,
                 String.format("Indirect Object: %d %d", this.ObjectNumber, this.GenerationNumber));
-        nodeComp.setDescription(Descriptions.getString(Descriptions.PDF_INDIRECT_OBJECT));
+        nodeComp.setDescription(Texts.getString(Texts.PDF_INDIRECT_OBJECT));
         DefaultMutableTreeNode nodeIO = new DefaultMutableTreeNode(nodeComp);
 
         int pos = this.startPos;

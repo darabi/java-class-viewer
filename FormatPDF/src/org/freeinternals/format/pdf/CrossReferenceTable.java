@@ -34,14 +34,14 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
     }
 
     private void parse(PosDataInputStream stream) throws IOException, FileFormatException {
-        String line;
+        PDFStatics.Line line;
         do {
-            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
-            if (Trailer.SIGNATURE.equalsIgnoreCase(line)) {
+            line = PDFStatics.readLine(stream);
+            if (Trailer.SIGNATURE.equalsIgnoreCase(line.Line)) {
                 stream.backward(Trailer.SIGNATURE.length() + 1);
                 break;
             }
-            this.Subsections.add(new Subsection(stream, line));
+            this.Subsections.add(new Subsection(stream, line.Line));
         } while (stream.hasNext());
     }
 
@@ -50,7 +50,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
                 super.startPos,
                 super.length,
                 "Cross Reference Table");
-        nodeComp.setDescription(Descriptions.getString(Descriptions.PDF_CROSS_REFERENCE_TABLE));
+        nodeComp.setDescription(Texts.getString(Texts.PDF_CROSS_REFERENCE_TABLE));
         DefaultMutableTreeNode nodeCRT = new DefaultMutableTreeNode(nodeComp);
         parentNode.add(nodeCRT);
 

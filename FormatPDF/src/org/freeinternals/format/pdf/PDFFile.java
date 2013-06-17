@@ -75,9 +75,9 @@ public class PDFFile extends FileFormat {
 
             counter++;
             System.out.println("Counter: " + counter);
-            if (counter >= 39) {
-                break;
-            }
+//            if (counter >= 39) {
+//                break;
+//            }
         }
     }
 
