@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
+import org.freeinternals.commonlib.core.PosDataInputStream.ASCIILine;
 import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.format.FileFormatException;
@@ -18,19 +19,25 @@ import org.freeinternals.format.FileFormatException;
 public class Trailer extends FileComponent implements GenerateTreeNode {
 
     static final String SIGNATURE = "trailer";
+    
+    /**
+     * The first line of current object.
+     */
+    public final ASCIILine HeaderLine;
 
-    Trailer(PosDataInputStream stream, String line) throws IOException, FileFormatException {
-        super.startPos = stream.getPos() - line.length() - 1;
+    Trailer(PosDataInputStream stream, ASCIILine line) throws IOException, FileFormatException {
+        this.HeaderLine = line;
+        super.startPos = stream.getPos() - line.Length();
         this.parse(stream);
         super.length = stream.getPos() - super.startPos;
     }
 
     private void parse(PosDataInputStream stream) throws IOException, FileFormatException {
-        String line;
+        ASCIILine line;
         do {
-            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
-            if (StartXRef.SIGNATURE.equalsIgnoreCase(line)) {
-                stream.backward(StartXRef.SIGNATURE.length() + 1);
+            line = stream.readASCIILine();
+            if (StartXRef.SIGNATURE.equalsIgnoreCase(line.Line)) {
+                stream.backward(line.Length());
                 break;
             }
         } while (stream.hasNext());
@@ -47,15 +54,15 @@ public class Trailer extends FileComponent implements GenerateTreeNode {
         int pos = this.startPos;
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
-                Trailer.SIGNATURE.length(),
+                this.HeaderLine.Line.length(),
                 "Signature")));
-        pos += Trailer.SIGNATURE.length();
+        pos += this.HeaderLine.Line.length();
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
-                1,
+                this.HeaderLine.NewLineLength,
                 "New Line")));
-        pos += 1;
-        int len = super.length - Trailer.SIGNATURE.length() - 1;
+        pos += this.HeaderLine.NewLineLength;
+        int len = super.length - this.HeaderLine.Length();
         if (len > 0) {
             nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,

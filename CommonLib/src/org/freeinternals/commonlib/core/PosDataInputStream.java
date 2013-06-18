@@ -156,6 +156,11 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         return this.readASCIIUntil((byte) 0);
     }
 
+    /**
+     * Read current byte array as ASCII string until
+     * <code>byte</code>
+     * <code>end</code>.
+     */
     public String readASCIIUntil(byte end) throws IOException {
         byte b;
         StringBuilder sb = new StringBuilder(100);
@@ -175,6 +180,11 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         return sb.toString();
     }
 
+    /**
+     * Read current byte array as ASCII string until any
+     * <code>byte</code> in array
+     * <code>end</code>.
+     */
     public String readASCIIUntil(byte... end) throws IOException {
         if (end == null || end.length < 1) {
             throw new IllegalArgumentException("Inalid parameter 'end'.");
@@ -196,6 +206,25 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         } while (true);
 
         return sb.toString();
+    }
+
+    /**
+     * Read current byte array as ASCII string until a {@link NEWLINE} flag
+     * found.
+     */
+    public ASCIILine readASCIILine() throws IOException {
+        int nlLen = 1;
+        String line = this.readASCIIUntil(NEWLINE.CR, NEWLINE.LF);
+        if (this.hasNext()) {
+            byte next = this.readByte();
+            if (next != NEWLINE.LF && next != NEWLINE.CR) {
+                this.backward(1);
+            } else {
+                nlLen += 1;
+            }
+        }
+
+        return new ASCIILine(line, nlLen);
     }
 
     private boolean _contains(byte v, byte[] list) {
@@ -391,6 +420,47 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * the end
      */
     public boolean hasNext() {
-        return this.getPos() < (this.getBuf().length - 1);
+        return this.getPos() <= (this.getBuf().length - 1);
+    }
+
+    /**
+     * Flag for New Line.
+     */
+    public static class NEWLINE {
+
+        /**
+         * LINE FEED (LF). New line character.
+         */
+        public static final byte LF = 0x0A;
+        /**
+         * CARRIAGE RETURN (CR).
+         */
+        public static final byte CR = 0x0D;
+    }
+
+    public static class ASCIILine {
+
+        /**
+         * New Line length, could be 1 (0x0D) or 2 (0x0D0A).
+         */
+        public final int NewLineLength;
+        public final String Line;
+
+        ASCIILine(String line, int nlLen) {
+            this.Line = line;
+            this.NewLineLength = nlLen;
+        }
+
+        /**
+         * Length of the line, including the {@link NEWLINE}.
+         */
+        public int Length() {
+            return this.Line.length() + NewLineLength;
+        }
+        
+        @Override
+        public String toString(){
+            return this.Line;
+        }
     }
 }

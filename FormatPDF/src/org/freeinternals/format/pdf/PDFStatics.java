@@ -1,8 +1,5 @@
 package org.freeinternals.format.pdf;
 
-import java.io.IOException;
-import org.freeinternals.commonlib.core.PosDataInputStream;
-
 /**
  *
  * @author Amos
@@ -106,31 +103,5 @@ public class PDFStatics {
          * @see #PS
          */
         public static final char PS_CHAR = '%';
-    }
-
-    public static Line readLine(PosDataInputStream stream) throws IOException {
-        String line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
-        int len = 1;
-        if (stream.hasNext()) {
-            byte next = stream.readByte();
-            if (next == PDFStatics.WhiteSpace.LF || next == PDFStatics.WhiteSpace.CR) {
-                len += 1;
-            } else {
-                stream.backward(1);
-            }
-        }
-
-        return new Line(line, len);
-    }
-
-    public static class Line {
-
-        public final String Line;
-        public final int NewLineLength;
-
-        Line(String line, int len) {
-            this.Line = line;
-            this.NewLineLength = len;
-        }
     }
 }

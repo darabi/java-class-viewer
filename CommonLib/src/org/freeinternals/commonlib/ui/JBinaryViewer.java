@@ -32,10 +32,7 @@ public class JBinaryViewer extends JPanel {
 
     private static final long serialVersionUID = 4876543219876500005L;
     public static final Font FONT = new Font(Font.DIALOG_INPUT, Font.PLAIN, 14);
-    public static final int ITEM_WIDTH = 8;
-    public static final int ITEM_WIDTH_HALF = 4;
-    public static final int DATA_ITEM_WIDTH = ITEM_WIDTH * 3;
-    public static final int ITEM_HEIGHT = 20;
+    public static final int ITEM_HEIGHT = 25; // 20;
     public static final int ROW_ITEM_MAX = 16;
     public static final int ROW_ITEM_MAX_INDEX = ROW_ITEM_MAX - 1;
     private final JRowViewer rowViewer;
@@ -50,7 +47,7 @@ public class JBinaryViewer extends JPanel {
 
     public JBinaryViewer() {
         this.setLayout(new BorderLayout());
-        this.setFont(JBinaryViewer.FONT);
+        // this.setFont(JBinaryViewer.FONT);
         this.addComponentListener(new ComponentResizedAdapter());
         this.addMouseWheelListener(new MouseWheelAdapter());
 

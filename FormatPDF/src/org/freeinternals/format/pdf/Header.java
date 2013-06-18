@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
+import org.freeinternals.commonlib.core.PosDataInputStream.ASCIILine;
 import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 
@@ -30,11 +31,11 @@ public class Header extends FileComponent implements GenerateTreeNode {
      * <code>1.6</code>,
      * <code>1.7</code>, etc.
      */
-    public final String Version;
+    public final ASCIILine Version;
 
     Header(PosDataInputStream stream) throws IOException {
         super.startPos = 0;
-        this.Version = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
+        this.Version = stream.readASCIILine();
         super.length = stream.getPos() - super.startPos;
     }
 
@@ -42,21 +43,24 @@ public class Header extends FileComponent implements GenerateTreeNode {
         JTreeNodeFileComponent nodeComp = new JTreeNodeFileComponent(
                 this.getStartPos(),
                 super.length,
-                String.format("PDF Header: version = %s", this.Version));
+                String.format("PDF Header: version = %s", this.Version.Line));
         nodeComp.setDescription(Texts.getString(Texts.PDF_FILE_HEADER));
         DefaultMutableTreeNode treenodePDFHeader = new DefaultMutableTreeNode(nodeComp);
 
+        int pos = this.startPos;
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
-                this.startPos,
+                pos,
                 PDF_HEADER.length(),
                 "PDF Signature")));
+        pos += PDF_HEADER.length();
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
-                this.startPos + PDF_HEADER.length(),
-                this.Version.length(),
+                pos,
+                this.Version.Line.length(),
                 "PDF Version = " + this.Version)));
+        pos += this.Version.Line.length();
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
-                this.startPos + PDF_HEADER.length() + this.Version.length(),
-                1,
+                pos,
+                this.Version.NewLineLength,
                 "New Line")));
         parentNode.add(treenodePDFHeader);
     }

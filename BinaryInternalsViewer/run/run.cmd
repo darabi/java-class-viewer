@@ -5,5 +5,6 @@ copy ..\..\FormatJPEG\dist\FormatJPEG.jar .\plugin
 copy ..\..\FormatPNG\dist\FormatPNG.jar   .\plugin
 copy ..\..\FormatZIP\dist\FormatZIP.jar   .\plugin
 copy ..\..\FormatPDF\dist\FormatPDF.jar   .\plugin
+copy ..\..\CommonLib\dist\CommonLib.jar   .\lib
 java -jar BinaryInternalsViewer.jar
-pause
+

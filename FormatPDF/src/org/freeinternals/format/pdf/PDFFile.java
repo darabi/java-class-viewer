@@ -49,36 +49,27 @@ public class PDFFile extends FileFormat {
         this.components.add(header);
 
         // Read PDF Components
-        String line;
-        int counter = 0;
+        PosDataInputStream.ASCIILine line;
         while (stream.hasNext()) {
-            line = stream.readASCIIUntil(PDFStatics.WhiteSpace.LF, PDFStatics.WhiteSpace.CR);
-            System.out.println("PDFFile: line = " + line);
-            if (line.length() == 0) {
-                // Error
-                break;
-            }
+            line = stream.readASCIILine();
+            //System.out.println("PDFFile: line = " + line.Line);
 
-            if (line.equalsIgnoreCase(EndOfFile.SIGNATURE)) {                     // %%EOF
+            if (line.Line.equalsIgnoreCase(EndOfFile.SIGNATURE)) {                          // %%EOF
                 this.components.add(new EndOfFile(stream, line));
-            } else if (line.charAt(0) == PDFStatics.DelimiterCharacter.PS_CHAR) { // %, Comment line
+            } else if (line.Line.charAt(0) == PDFStatics.DelimiterCharacter.PS_CHAR) {      // %, Comment line
                 this.components.add(new Comment(stream, line));
-            } else if (line.endsWith(IndirectObject.SIGNATURE_START)) {           // obj
+            } else if (line.Line.matches(IndirectObject.SIGNATURE_START_REGEXP)) {          // 1 0 obj 
                 this.components.add(new IndirectObject(stream, line));
-            } else if (line.equalsIgnoreCase(CrossReferenceTable.SIGNATURE)) {     // xref
+            } else if (line.Line.trim().equalsIgnoreCase(CrossReferenceTable.SIGNATURE)) {  // xref
                 this.components.add(new CrossReferenceTable(stream, line));
-            } else if (line.equalsIgnoreCase(Trailer.SIGNATURE)) {                 // trailer
+            } else if (line.Line.equalsIgnoreCase(Trailer.SIGNATURE)) {                     // trailer
                 this.components.add(new Trailer(stream, line));
-            } else if (line.equalsIgnoreCase(StartXRef.SIGNATURE)) {               // startxref
+            } else if (line.Line.equalsIgnoreCase(StartXRef.SIGNATURE)) {                   // startxref
                 this.components.add(new StartXRef(stream, line));
+            } else {
+                this.components.add(new EmptyLine(stream, line));
             }
-
-            counter++;
-            System.out.println("Counter: " + counter);
-//            if (counter >= 39) {
-//                break;
-//            }
-        }
+        } // End While
     }
 
     public String getContentTabName() {
@@ -86,7 +77,6 @@ public class PDFFile extends FileFormat {
     }
 
     public void generateTreeNode(DefaultMutableTreeNode root) {
-        System.err.println(String.format("Generate Tree Node: Get Component Size: %d", this.components.size()));
         for (FileComponent comp : this.components) {
             if (comp instanceof GenerateTreeNode) {
                 ((GenerateTreeNode) comp).generateTreeNode(root);
