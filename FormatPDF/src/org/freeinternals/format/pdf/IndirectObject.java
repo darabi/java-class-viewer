@@ -12,7 +12,7 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.commonlib.util.DefaultFileComponent;
 import org.freeinternals.format.FileFormatException;
-import org.freeinternals.format.pdf.object.Stream;
+import org.freeinternals.format.pdf.basicobj.Stream;
 
 /**
  * See
@@ -108,8 +108,8 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         } while (stream.getPos() < (stream.getBuf().length - 1));
     }
 
-    private void parseStreamObject(PosDataInputStream parent) throws IOException, FileFormatException {
-        PosDataInputStream stream = parent.getPartialStream(
+    private void parseStreamObject(PosDataInputStream root) throws IOException, FileFormatException {
+        PosDataInputStream stream = root.getPartialStream(
                 super.startPos + this.NumberLen + this.SignatureStart.Length(),
                 super.length - this.NumberLen - this.SignatureStart.Length() - this.SignatureEnd.Length());
 
@@ -137,8 +137,24 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         int len = lastIndex - pos;
         this.components.add(0, new DefaultFileComponent(
                 pos, len, "Content"));
-
-        // Sort the Components
+        stream = root.getPartialStream(pos, len);
+        while (stream.hasNext()) {
+            byte next1 = stream.readByte();
+            switch (next1){
+                case PDFStatics.DelimiterCharacter.LP:   //  '(' - Leteral String
+                    break;
+                case PDFStatics.DelimiterCharacter.LT:   //  '<' - Hexadecimal String; << Dictionary
+                    break;
+                case PDFStatics.DelimiterCharacter.SO:   //  '/' - Name
+                    break;
+                case PDFStatics.DelimiterCharacter.LS:   //  '[' - Array
+                    break;
+                default:
+                    // boolean, Numeric, null; Comment
+                    break;
+                    
+            }
+        }
     }
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {

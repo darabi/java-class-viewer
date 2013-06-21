@@ -163,12 +163,29 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
             stream.skip(2);
         }
 
+        /**
+         * Get meaning of the {@link #Type} field.
+         */
+        public String getTypeMeaning() {
+            String result = "Error";
+            switch (this.Type) {
+                case TYPE_IN_USE:
+                    result = "In-Use (n)";
+                    break;
+                case TYPE_FREE:
+                    result = "Free (f)";
+                    break;
+            }
+
+            return result;
+        }
+
         public void generateTreeNode(DefaultMutableTreeNode parentNode) {
             int pos = this.startPos;
             DefaultMutableTreeNode nodeEntry = new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,
                     super.length,
-                    String.format("Entry %010d", this.Offset)));
+                    String.format("Entry %010d - %s", this.Offset, this.getTypeMeaning())));
             parentNode.add(nodeEntry);
 
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
@@ -191,10 +208,12 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
                     1,
                     "Separator")));
             pos += 1;
-            nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
+            JTreeNodeFileComponent compType = new JTreeNodeFileComponent(
                     pos,
                     1,
-                    String.format("Type - " + Character.toString(this.Type)))));
+                    String.format("Type - " + Character.toString(this.Type)));
+            compType.setDescription(Texts.getString(Texts.PDF_CROSS_REFERENCE_TABLE_KEY));
+            nodeEntry.add(new DefaultMutableTreeNode(compType));
             pos += 1;
             nodeEntry.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                     pos,

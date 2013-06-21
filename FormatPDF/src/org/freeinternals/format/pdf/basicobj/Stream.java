@@ -1,4 +1,4 @@
-package org.freeinternals.format.pdf.object;
+package org.freeinternals.format.pdf.basicobj;
 
 import java.io.IOException;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -52,12 +52,19 @@ public class Stream extends FileComponent implements GenerateTreeNode {
     }
 
     /**
-     * Get the content length of current {@link Stream} object. <p> The content
-     * length does not include the signature
-     * <code>stream</code> and
+     * Get the start position of the Encoded Stream Content.
+     */
+    public int getStreamStartPos() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Get the Encoded Stream Content Length of current {@link Stream} object.
+     * <p> The content length does not include the signature
+     * <code>stream</code> or
      * <code>endstream</code>. </p>
      */
-    public int getContentLength() {
+    public int getStreamLength() {
         return this.length - this.SignatureLen - this.SignatureEnd.Length();
     }
 
@@ -84,9 +91,9 @@ public class Stream extends FileComponent implements GenerateTreeNode {
 
         nodeStream.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
-                this.getContentLength(),
+                this.getStreamLength(),
                 "Stream Content")));
-        pos += this.getContentLength();
+        pos += this.getStreamLength();
 
         nodeStream.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,

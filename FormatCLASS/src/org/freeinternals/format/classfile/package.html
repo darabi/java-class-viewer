@@ -1,35 +1,31 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
-<head>
-<!--
+    <head>
+        <!--
+        
+          @(#)package.html    April 11, 2009
+        
+        -->
+    </head>
+    <body>
 
-  @(#)package.html    April 11, 2009
-
-  Copyright  2009, FreeInternals.org. All rights reserved.
-  Use is subject to license terms.
-
--->
-</head>
-<body bgcolor="white">
-
-Parse a Java class file Byte Array, and privides a serious of friendly
-classes to get infomation from the parsed class file.
+        Parse a Java class file Byte Array, and provides a serious of friendly
+        classes to get information from the parsed class file.
 
 
-<h2>Package Specification</h2>
+        <h2>Package Specification</h2>
 
-We start to use this package by onstructing a
-{@link org.freeinternals.classfile.core.ClassFile} object from
-a byte java class byte array:
+        We start to use this package by constructing a
+        {@link org.freeinternals.format.classfile.ClassFile} object from
+        a byte java class byte array:
 
-<pre>
+        <pre>
     byte[] classByteArray = ...
     ClassFile classfile = new ClassFile(classByteArray)
-</pre>
+        </pre>
 
-and then, we can get various information from the class file:
+        and then, we can get various information from the class file:
 
-<pre>
+        <pre>
     AccessFlags af = classfile.getAccessFlags();
     AbstractConstantPool[] cp = classfile.getConstantPool();
     FieldCount fc = classfile.getFieldCount();
@@ -37,23 +33,21 @@ and then, we can get various information from the class file:
     MethodCount mc = classfile.getMethodCount();
     MethodInfo[] mi = classfile.getMethods();
     ...
-</pre>
+        </pre>
 
-<h2>Related Documentation</h2>
+        <h2>Related Documentation</h2>
 
-For overviews, tutorials, examples, guides, and tool documentation, please see:
-<ul>
-  <li><a href="http://www.freeinternals.org/">www.freeinternals.org</a>
-  <li><a href="http://java.sun.com/docs/books/jvms/second_edition/html/VMSpecTOC.doc.html">The Java Virtual Machine Specification, Second Edition</a>
-     (<a href="http://www.freeinternals.org/mirror/java.sun.com/vmspec.2nded/VMSpecTOC.doc.html">Local mirror</a>)
-  <li><a href="http://java.sun.com/docs/books/jls/">The Java Language Specification</a>
-</ul>
+        For overviews, tutorials, examples, guides, and tool documentation, please see:
+        <ul>
+            <li><a href="https://code.google.com/p/freeinternals/">https://code.google.com/p/freeinternals/</a>
+            <li><a href="http://docs.oracle.com/javase/specs/">Java Language and Virtual Machine Specifications</a>
+        </ul>
 
-<!-- Put @see and @since tags down here. -->
-@see org.freeinternals.classfile.core.ClassFile
-@since JDK 6.0
-@author Amos Shi
+        <!-- Put @see and @since tags down here. -->
+        @see org.freeinternals.format.classfile.ClassFile
+        @since JDK 6.0
+        @author Amos Shi
 
-</body>
+    </body>
 </html>
 
