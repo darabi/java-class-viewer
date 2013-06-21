@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code InnerClasses} attribute.
@@ -37,7 +38,7 @@ public class AttributeInnerClasses extends AttributeInfo {
     private transient Class[] classes;
 
     AttributeInnerClasses(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         this.number_of_classes = new u2();

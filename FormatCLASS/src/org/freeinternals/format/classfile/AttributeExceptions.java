@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code Exceptions} attribute.
@@ -33,7 +34,7 @@ public class AttributeExceptions extends AttributeInfo {
     private transient u2[] exception_index_table;
 
     AttributeExceptions(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         this.number_of_exceptions = new u2();

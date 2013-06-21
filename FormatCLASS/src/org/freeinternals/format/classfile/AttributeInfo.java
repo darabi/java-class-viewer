@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * Super class for attributes in class file. All attributes have the following format:
@@ -114,7 +115,7 @@ public class AttributeInfo extends ClassComponent {
     }
 
     AttributeInfo(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         this.startPos = posDataInputStream.getPos() - 2;
 
         this.type = type;
@@ -128,7 +129,7 @@ public class AttributeInfo extends ClassComponent {
     }
 
     static AttributeInfo parse(final PosDataInputStream posDataInputStream, final AbstractCPInfo[] cp)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         AttributeInfo attr = new AttributeInfo();
 
         final u2 attrNameIndex = new u2();
@@ -157,7 +158,7 @@ public class AttributeInfo extends ClassComponent {
                 attr = new AttributeExtended(attrNameIndex, Extended + type, posDataInputStream);
             }
         } else {
-            throw new ClassFormatException(String.format("Attribute name_index is not CONSTANT_Utf8. Constant index = %d, type = %d.", attrNameIndex.value, cp[attrNameIndex.value].tag.value));
+            throw new FileFormatException(String.format("Attribute name_index is not CONSTANT_Utf8. Constant index = %d, type = %d.", attrNameIndex.value, cp[attrNameIndex.value].tag.value));
         }
 
         return attr;
@@ -170,9 +171,9 @@ public class AttributeInfo extends ClassComponent {
      * @throws org.freeinternals.classfile.core.ClassFormatException
      */
     protected void checkSize(final int endPos)
-            throws ClassFormatException {
+            throws FileFormatException {
         if (this.startPos + this.length != endPos) {
-            throw new ClassFormatException(String.format("Attribute analysis failed. type='%s', startPos=%d, length=%d, endPos=%d", this.getName(), this.startPos, this.length, endPos));
+            throw new FileFormatException(String.format("Attribute analysis failed. type='%s', startPos=%d, length=%d, endPos=%d", this.getName(), this.startPos, this.length, endPos));
         }
     }
 

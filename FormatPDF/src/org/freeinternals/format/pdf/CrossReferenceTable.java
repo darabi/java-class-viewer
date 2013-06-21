@@ -64,7 +64,7 @@ public class CrossReferenceTable extends FileComponent implements GenerateTreeNo
         nodeCRT.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.HeaderLine.Line.length(),
-                "Signature")));
+                Texts.Signature + SIGNATURE)));
         pos += this.HeaderLine.Line.length();
         nodeCRT.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,

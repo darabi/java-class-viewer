@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * {@code Field} of a class or interface. The {@code Field} structure has the following format:
@@ -68,7 +69,7 @@ public class FieldInfo extends ClassComponent {
     }
 
     FieldInfo(final PosDataInputStream posDataInputStream, final AbstractCPInfo[] cp)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         this.startPos = posDataInputStream.getPos();
         this.length = -1;
 

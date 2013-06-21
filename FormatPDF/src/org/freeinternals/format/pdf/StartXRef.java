@@ -52,12 +52,12 @@ public class StartXRef extends FileComponent implements GenerateTreeNode {
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.HeaderLine.Line.length(),
-                "Signature")));
+                Texts.Signature + SIGNATURE)));
         pos += this.HeaderLine.Line.length();
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.HeaderLine.NewLineLength,
-                "New Line")));
+                Texts.NewLine)));
         pos += this.HeaderLine.NewLineLength;
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
@@ -67,6 +67,6 @@ public class StartXRef extends FileComponent implements GenerateTreeNode {
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.OffsetLine.NewLineLength,
-                "New Line")));
+                Texts.NewLine)));
     }
 }

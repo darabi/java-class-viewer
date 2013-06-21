@@ -61,7 +61,7 @@ public class Header extends FileComponent implements GenerateTreeNode {
         treenodePDFHeader.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.Version.NewLineLength,
-                "New Line")));
+                Texts.NewLine)));
         parentNode.add(treenodePDFHeader);
     }
 }

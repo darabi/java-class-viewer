@@ -7,6 +7,9 @@ import java.util.ResourceBundle;
  * @author Amos Shi
  */
 public class Texts {
+    
+    public static final String NewLine = "New Line";
+    public static final String Signature = "Signature: ";
 
     private static final ResourceBundle res;
 

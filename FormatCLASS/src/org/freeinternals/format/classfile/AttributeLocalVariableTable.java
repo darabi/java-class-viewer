@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code LocalVariableTable} attribute.
@@ -38,7 +39,7 @@ public class AttributeLocalVariableTable extends AttributeInfo {
     private transient LocalVariableTable[] localVariableTable;
 
     AttributeLocalVariableTable(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         this.local_variable_table_length = new u2();

@@ -37,7 +37,7 @@ public class Comment extends FileComponent implements GenerateTreeNode{
         nodeComment.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 super.startPos,
                 this.Text.length(),
-                "PDF Signature")));
+                "Text")));
         nodeComment.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 super.startPos + this.Text.length(),
                 super.length - this.Text.length(),

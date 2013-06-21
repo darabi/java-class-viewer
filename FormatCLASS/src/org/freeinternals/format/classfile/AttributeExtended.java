@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the Extended attribute. Non-standard attribute, all of the
@@ -32,7 +33,7 @@ public class AttributeExtended extends AttributeInfo {
     transient private byte[] rawData;
 
     AttributeExtended(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         if (this.attribute_length.value > 0) {

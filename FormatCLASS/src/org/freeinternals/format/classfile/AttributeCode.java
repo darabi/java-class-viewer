@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code Code} attribute.
@@ -51,7 +52,7 @@ public class AttributeCode extends AttributeInfo {
     private transient AttributeInfo[] attributes;
 
     AttributeCode(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream, final AbstractCPInfo[] cp)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         int i;

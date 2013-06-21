@@ -8,6 +8,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code ConstantValue} attribute.
@@ -31,13 +32,13 @@ public class AttributeConstantValue extends AttributeInfo {
     private transient final u2 constantvalue_index;
 
     AttributeConstantValue(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-        throws IOException, ClassFormatException
+        throws IOException, FileFormatException
     {
         super(nameIndex, type, posDataInputStream);
         
         if (this.attribute_length.value != 2)
         {
-            throw new ClassFormatException(String.format("The attribute_length of AttributeConstantValue is not 2, it is %d.", this.attribute_length.value));
+            throw new FileFormatException(String.format("The attribute_length of AttributeConstantValue is not 2, it is %d.", this.attribute_length.value));
         }
 
         this.constantvalue_index = new u2();

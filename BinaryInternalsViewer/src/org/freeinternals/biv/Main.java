@@ -44,7 +44,7 @@ public class Main extends JFrame {
 
     @SuppressWarnings("LeakingThisInConstructor")
     private Main() {
-        this.setTitle("Binary Internals Viewer");
+        this.setTitle("Binary Internals Viewer " + PluginManager.getPlugedExtensions());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JFrameTool.centerJFrame(this);
@@ -56,7 +56,7 @@ public class Main extends JFrame {
         this.enalbeFileDrop();
         this.setVisible(true);
     }
-
+    
     /**
      * @param args the command line arguments
      */

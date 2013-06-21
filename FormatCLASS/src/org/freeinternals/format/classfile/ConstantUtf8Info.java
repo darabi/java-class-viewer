@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code CONSTANT_Utf8_info} structure in constant pool.
@@ -32,7 +33,7 @@ public class ConstantUtf8Info extends AbstractCPInfo {
     private final byte[] bytes;
 
     ConstantUtf8Info(final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super();
         this.tag.value = AbstractCPInfo.CONSTANT_Utf8;
 
@@ -43,7 +44,7 @@ public class ConstantUtf8Info extends AbstractCPInfo {
         this.bytes = new byte[this.length_utf8.value];
         final int bytesRead = posDataInputStream.read(this.bytes);
         if (bytesRead != this.length_utf8.value) {
-            throw new ClassFormatException("Read bytes for CONSTANT_Utf8 error.");
+            throw new FileFormatException("Read bytes for CONSTANT_Utf8 error.");
         }
 
         super.length = this.length_utf8.value + 1 + 2;

@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code Deprecated} attribute.
@@ -28,11 +29,11 @@ import java.io.IOException;
 public class AttributeDeprecated extends AttributeInfo {
 
     AttributeDeprecated(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         if (this.attribute_length.value != 0) {
-            throw new ClassFormatException(String.format("The attribute_length of AttributeDeprecated is not 0, it is %d.", this.attribute_length.value));
+            throw new FileFormatException(String.format("The attribute_length of AttributeDeprecated is not 0, it is %d.", this.attribute_length.value));
         }
 
         super.checkSize(posDataInputStream.getPos());

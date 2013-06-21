@@ -40,7 +40,7 @@ public class EmptyLine extends FileComponent implements GenerateTreeNode {
         nodeEL.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 super.startPos + this.Line.Line.length(),
                 this.Line.NewLineLength,
-                "New Line")));
+                Texts.NewLine)));
         parentNode.add(nodeEL);
     }
 }

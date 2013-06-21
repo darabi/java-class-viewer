@@ -55,12 +55,12 @@ public class Trailer extends FileComponent implements GenerateTreeNode {
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.HeaderLine.Line.length(),
-                "Signature")));
+                Texts.Signature + SIGNATURE)));
         pos += this.HeaderLine.Line.length();
         nodeTrailer.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.HeaderLine.NewLineLength,
-                "New Line")));
+                Texts.NewLine)));
         pos += this.HeaderLine.NewLineLength;
         int len = super.length - this.HeaderLine.Length();
         if (len > 0) {

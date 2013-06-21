@@ -18,11 +18,11 @@ import javax.swing.JTextArea;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.freeinternals.format.classfile.ClassFile;
-import org.freeinternals.format.classfile.ClassFormatException;
-import org.freeinternals.format.classfile.Opcode;
 import org.freeinternals.commonlib.ui.JBinaryViewer;
 import org.freeinternals.commonlib.ui.JPanelForTree;
+import org.freeinternals.format.FileFormatException;
+import org.freeinternals.format.classfile.ClassFile;
+import org.freeinternals.format.classfile.Opcode;
 
 /**
  * A split panel created from a class file byte array.
@@ -50,7 +50,7 @@ public class JSplitPaneClassFile extends JSplitPane {
             this.classFile = new ClassFile(byteArray.clone());
         } catch (IOException ex) {
             Logger.getLogger(JSplitPaneClassFile.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassFormatException ex) {
+        } catch (FileFormatException ex) {
             Logger.getLogger(JSplitPaneClassFile.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.createAndShowGUI(top);

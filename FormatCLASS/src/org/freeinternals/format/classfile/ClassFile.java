@@ -6,8 +6,10 @@
  */
 package org.freeinternals.format.classfile;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * Represents a {@code class} file. A {@code class} file structure has the
@@ -84,7 +86,7 @@ public class ClassFile {
      * parameter {@code classByteArray} is not a valid class
      */
     public ClassFile(final byte[] classByteArray)
-            throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+            throws java.io.IOException, FileFormatException {
         this.classByteArray = classByteArray.clone();
         final ClassFile.Parser parser = new Parser();
         parser.parse();
@@ -92,11 +94,11 @@ public class ClassFile {
     }
 
     private void analysisDeclarations()
-            throws org.freeinternals.format.classfile.ClassFormatException {
+            throws FileFormatException {
 
         // Analysis field declarations
         if (this.fields_count.getValue() > 0) {
-            String type = null;
+            String type;
             for (FieldInfo field : fields) {
                 try {
                     type = SignatureConvertor.signature2Type(this.getConstantUtf8Value(field.getDescriptorIndex()));
@@ -114,8 +116,8 @@ public class ClassFile {
 
         // Analysis method declarations
         if (this.methods_count.getValue() > 0) {
-            String mtdReturnType = null;
-            String mtdParameters = null;
+            String mtdReturnType;
+            String mtdParameters;
             for (MethodInfo method : methods) {
                 try {
                     mtdReturnType = SignatureConvertor.parseMethodReturnType(this.getConstantUtf8Value(method.getDescriptorIndex()));
@@ -140,11 +142,11 @@ public class ClassFile {
     }
 
     private String getConstantUtf8Value(final int cpIndex)
-            throws org.freeinternals.format.classfile.ClassFormatException {
+            throws FileFormatException {
         String returnValue = null;
 
         if ((cpIndex == 0) || (cpIndex >= this.constant_pool_count.value.value)) {
-            throw new ClassFormatException(String.format(
+            throw new FileFormatException(String.format(
                     "Constant Pool index is out of range. CP index cannot be zero, and should be less than CP count (=%d). CP index = %d.",
                     this.constant_pool_count.value.value,
                     cpIndex));
@@ -154,7 +156,7 @@ public class ClassFile {
             final ConstantUtf8Info utf8Info = (ConstantUtf8Info) this.constant_pool[cpIndex];
             returnValue = utf8Info.getValue();
         } else {
-            throw new ClassFormatException(String.format(
+            throw new FileFormatException(String.format(
                     "Unexpected constant pool type: Utf8(%d) expected, but it is '%d'.",
                     AbstractCPInfo.CONSTANT_Utf8,
                     this.constant_pool[cpIndex].tag.value));
@@ -192,10 +194,7 @@ public class ClassFile {
         }
 
         byte[] data = new byte[length];
-        for (int i = 0; i < length; i++) {
-            data[i] = this.classByteArray[startIndex + i];
-        }
-
+        System.arraycopy(this.classByteArray, startIndex, data, 0, length);
         return data;
     }
 
@@ -374,13 +373,13 @@ public class ClassFile {
         }
 
         public void parse()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws FileFormatException, IOException {
             final PosByteArrayInputStream posByteArrayInputStream = new PosByteArrayInputStream(classByteArray);
             ClassFile.this.posDataInputStream = new PosDataInputStream(posByteArrayInputStream);
 
             ClassFile.this.magic = new u4(ClassFile.this.posDataInputStream.readInt());
             if (ClassFile.this.magic.value != ClassFile.MAGIC) {
-                throw new ClassFormatException("The magic number of the byte array is not 0xCAFEBABE");
+                throw new FileFormatException("The magic number of the byte array is not 0xCAFEBABE");
             }
 
             this.parseClassFileVersion();
@@ -392,13 +391,13 @@ public class ClassFile {
         }
 
         private void parseClassFileVersion()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws java.io.IOException, FileFormatException {
             ClassFile.this.minor_version = new MinorVersion(ClassFile.this.posDataInputStream);
             ClassFile.this.major_version = new MajorVersion(ClassFile.this.posDataInputStream);
         }
 
         private void parseConstantPool()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws java.io.IOException, FileFormatException {
             ClassFile.this.constant_pool_count = new CPCount(ClassFile.this.posDataInputStream);
             final int cp_count = ClassFile.this.constant_pool_count.getValue();
 
@@ -455,7 +454,7 @@ public class ClassFile {
                         break;
 
                     default:
-                        throw new ClassFormatException(
+                        throw new FileFormatException(
                                 String.format("Unreconizable constant pool type found. Constant pool tag: [%d]; class file offset: [%d].", tag, ClassFile.this.posDataInputStream.getPos() - 1));
                 }
 
@@ -473,7 +472,7 @@ public class ClassFile {
         }
 
         private void parseClassDeclaration()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws java.io.IOException, FileFormatException {
             ClassFile.this.access_flags = new AccessFlags(ClassFile.this.posDataInputStream);
             ClassFile.this.this_class = new ThisClass(ClassFile.this.posDataInputStream);
             ClassFile.this.super_class = new SuperClass(ClassFile.this.posDataInputStream);
@@ -488,7 +487,7 @@ public class ClassFile {
         }
 
         private void parseFields()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws java.io.IOException, FileFormatException {
             ClassFile.this.fields_count = new FieldCount(ClassFile.this.posDataInputStream);
             final int fieldCount = ClassFile.this.fields_count.getValue();
             if (fieldCount > 0) {
@@ -500,7 +499,7 @@ public class ClassFile {
         }
 
         private void parseMethods()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws java.io.IOException, FileFormatException {
             ClassFile.this.methods_count = new MethodCount(ClassFile.this.posDataInputStream);
             final int methodCount = ClassFile.this.methods_count.getValue();
 
@@ -513,7 +512,7 @@ public class ClassFile {
         }
 
         private void parseAttributes()
-                throws java.io.IOException, org.freeinternals.format.classfile.ClassFormatException {
+                throws java.io.IOException, FileFormatException {
             ClassFile.this.attributes_count = new AttributeCount(ClassFile.this.posDataInputStream);
             final int attributeCount = ClassFile.this.attributes_count.getValue();
             if (attributeCount > 0) {

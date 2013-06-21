@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code LineNumberTable} attribute.
@@ -35,7 +36,7 @@ public class AttributeLineNumberTable extends AttributeInfo {
     private transient LineNumberTable[] lineNumberTable;
 
     AttributeLineNumberTable(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         this.line_number_table_length = new u2();

@@ -23,7 +23,7 @@ public class EndOfFile extends FileComponent implements GenerateTreeNode {
      * The content of current line.
      */
     public final ASCIILine Line;
-    
+
     EndOfFile(PosDataInputStream stream, ASCIILine line) throws IOException, FileFormatException {
         super.startPos = stream.getPos() - line.Length();
         super.length = line.Length();
@@ -40,11 +40,11 @@ public class EndOfFile extends FileComponent implements GenerateTreeNode {
         nodeEoF.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 super.startPos,
                 this.Line.Line.length(),
-                "Signature")));
+                Texts.Signature + SIGNATURE)));
         nodeEoF.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 super.startPos + this.Line.Line.length(),
                 this.Line.NewLineLength,
-                "New Line")));
+                Texts.NewLine)));
         parentNode.add(nodeEoF);
     }
 }

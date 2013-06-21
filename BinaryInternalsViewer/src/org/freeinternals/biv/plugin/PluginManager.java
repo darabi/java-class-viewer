@@ -42,7 +42,7 @@ public class PluginManager {
     private static void loadPlugins() {
         File pluginFolder = new File(PLUGIN_DIR);
         File pluginFiles[];
-        String pluginDescClassName = null;
+        String pluginDescClassName;
 
         if (pluginFolder.exists() == false) {
             // The plugin folder does not exist
@@ -88,6 +88,23 @@ public class PluginManager {
         plugins.add((PluginDescriptor) cls.newInstance());
     }
 
+    public static String getPlugedExtensions(){
+        StringBuilder builder = new StringBuilder(16);
+        if (plugins.size() > 0) {
+            builder.append(" - ");
+            for (PluginDescriptor plugin : plugins) {
+                String[] exts = plugin.getExtensions();
+                for (String ext : exts) {
+                    builder.append(ext);
+                    builder.append(", ");
+                }
+            }
+            builder.append(" ...");
+        }
+    
+        return builder.toString();
+    }
+    
     public static void initChooseFilters(JFileChooser chooser) {
         FileNameExtensionFilter filter;
         for (PluginDescriptor plugin : plugins) {

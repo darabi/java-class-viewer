@@ -6,7 +6,6 @@
  */
 package org.freeinternals.format.jpeg;
 
-import org.freeinternals.format.jpeg.tiff.TIFF;
 import java.io.IOException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.freeinternals.commonlib.core.PosByteArrayInputStream;
@@ -14,6 +13,7 @@ import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.commonlib.ui.JXMLViewer;
 import org.freeinternals.format.FileFormatException;
+import org.freeinternals.format.jpeg.tiff.TIFF;
 import org.freeinternals.format.jpeg.xmp.XMP;
 
 /**
@@ -38,12 +38,19 @@ public class Marker_APP01 extends Marker {
         this.identifier = super.parseIdentifier(pDisMarker);
 
         if (this.identifier.equalsIgnoreCase(Marker_APP01.identifier_Exif)) {
+            // TODO - Clean the following code, call method 
+            //        pDisMarker.getPartialStream(startPos, length) - This method test failed June.19.2013
             final int lengthTiff = this.marker_length - 2 - 6;
             final byte[] bytesTiff = new byte[lengthTiff];
             System.arraycopy(pDisMarker.getBuf(), 2 + 2 + 6, bytesTiff, 0, lengthTiff);
             this.tiff = new TIFF(new PosDataInputStream(
                     new PosByteArrayInputStream(bytesTiff),
                     this.getStartPos() + 2 + 2 + 6));
+            
+//            pDisMarker.getPartialStream(this.getStartPos() + 2 + 2 + 6, lengthTiff);
+//            this.tiff = new TIFF(pDisMarker.getPartialStream(
+//                    this.getStartPos() + 2 + 2 + 6,
+//                    lengthTiff));            
         } else if (this.identifier.startsWith(Marker_APP01.identifier_XMP)) {
             final int lengthXMP = this.marker_length - 2 - this.identifier.length() - 1;
             final byte[] bytesXMP = new byte[lengthXMP];

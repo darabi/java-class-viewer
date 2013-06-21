@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * The class for the {@code SourceFile} attribute.
@@ -31,11 +32,11 @@ public class AttributeSourceFile extends AttributeInfo {
     private transient final u2 sourcefile_index;
 
     AttributeSourceFile(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         super(nameIndex, type, posDataInputStream);
 
         if (this.attribute_length.value != 2) {
-            throw new ClassFormatException(String.format("The attribute_length of AttributeSourceFile is not 2, it is %d.", this.attribute_length.value));
+            throw new FileFormatException(String.format("The attribute_length of AttributeSourceFile is not 2, it is %d.", this.attribute_length.value));
         }
 
         this.sourcefile_index = new u2();

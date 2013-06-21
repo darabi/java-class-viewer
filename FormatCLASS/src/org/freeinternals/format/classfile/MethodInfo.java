@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.format.FileFormatException;
 
 /**
  * {@code Method} of a class or interface. The {@code Method} structure has the following format:
@@ -76,7 +77,7 @@ public class MethodInfo extends ClassComponent {
     }
 
     MethodInfo(final PosDataInputStream posDataInputStream, final AbstractCPInfo[] cp)
-            throws IOException, ClassFormatException {
+            throws IOException, FileFormatException {
         this.startPos = posDataInputStream.getPos();
         this.length = -1;
 

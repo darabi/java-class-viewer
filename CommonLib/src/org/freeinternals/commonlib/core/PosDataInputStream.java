@@ -32,9 +32,26 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         super(in);
     }
 
+    /**
+     * Create a sub {@link PosDataInputStream}, which starts from
+     * <code>offset</code>.
+     */
     public PosDataInputStream(final PosByteArrayInputStream in, int offset) {
         super(in);
         this.offset = offset;
+    }
+
+    /**
+     * Get a partial {@link PosDataInputStream}, which starts from
+     * <code>startPos</code> of original stream, with length
+     * <code>length</code>.
+     *
+     * @return A partial {@link PosDataInputStream} object
+     */
+    public PosDataInputStream getPartialStream(int startPos, int length) {
+        return new PosDataInputStream(
+                new PosByteArrayInputStream(this.getBuf(startPos, length)),
+                startPos);
     }
 
     /**
@@ -73,6 +90,28 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Return a part of the byte array.
+     *
+     * @param startPos Start Position of the original byte array
+     * @param length Length of data to be read
+     * @return the partial byte array
+     */
+    public byte[] getBuf(int startPos, int length) {
+        if ((startPos < 0) || (length < 1)) {
+            throw new IllegalArgumentException("startIndex or length is not valid. startIndex = " + startPos + ", length = " + length);
+        }
+
+        byte[] bufFull = this.getBuf();
+        if (startPos + length - 1 > bufFull.length) {
+            throw new ArrayIndexOutOfBoundsException("The last item index is bigger than class byte array size.");
+        }
+
+        final byte[] bufPart = new byte[length];
+        System.arraycopy(bufFull, startPos, bufPart, 0, length);
+        return bufPart;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -420,7 +459,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * the end
      */
     public boolean hasNext() {
-        return this.getPos() <= (this.getBuf().length - 1);
+        return this.getPos() - this.offset <= (this.getBuf().length - 1);
     }
 
     /**
@@ -441,12 +480,12 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     public static class ASCIILine {
 
         /**
-         * New Line length, could be 1 (0x0D) or 2 (0x0D0A).
+         * New Line length, could be 1 (0x0D) or 2 (0x0D0A), or 0.
          */
         public final int NewLineLength;
         public final String Line;
 
-        ASCIILine(String line, int nlLen) {
+        public ASCIILine(String line, int nlLen) {
             this.Line = line;
             this.NewLineLength = nlLen;
         }
@@ -457,9 +496,9 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         public int Length() {
             return this.Line.length() + NewLineLength;
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             return this.Line;
         }
     }

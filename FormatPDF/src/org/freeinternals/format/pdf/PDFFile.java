@@ -27,6 +27,9 @@ import org.freeinternals.format.FileFormatException;
  */
 public class PDFFile extends FileFormat {
 
+    /**
+     * Component of current file.
+     */
     private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(100));
 
     public PDFFile(final File file) throws IOException, FileFormatException {

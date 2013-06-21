@@ -14,27 +14,33 @@ public class PDFStatics {
     public static class WhiteSpace {
 
         /**
-         * Null (NUL).
+         * Null (NUL). <p>Value
+         * <code>0x00</code>.</p>
          */
         public static final byte NUL = 0x00;
         /**
-         * HORIZONTAL TAB (HT).
+         * HORIZONTAL TAB (HT).<p>Value
+         * <code>0x09</code>.</p>
          */
         public static final byte HT = 0x09;
         /**
-         * LINE FEED (LF). New line character.
+         * LINE FEED (LF). New line character.<p>Value
+         * <code>0x0A</code>.</p>
          */
         public static final byte LF = 0x0A;
         /**
-         * FORM FEED (FF).
+         * FORM FEED (FF).<p>Value
+         * <code>0x0C</code>.</p>
          */
         public static final byte FF = 0x0C;
         /**
-         * CARRIAGE RETURN (CR).
+         * CARRIAGE RETURN (CR).<p>Value
+         * <code>0x0D</code>.</p>
          */
         public static final byte CR = 0x0D;
         /**
-         * SPACE (SP).
+         * SPACE (SP). <p>Value
+         * <code>0x20</code>.</p>
          */
         public static final byte SP = 0x20;
     }
