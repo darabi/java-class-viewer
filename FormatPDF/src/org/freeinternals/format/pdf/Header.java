@@ -9,6 +9,9 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 
 /**
+ * PDF file Header. , see
+ * <pre>PDF 32000-1:2008</pre>
+ * <code>7.5.2</code>: File Header.
  *
  * @author Amos Shi
  */

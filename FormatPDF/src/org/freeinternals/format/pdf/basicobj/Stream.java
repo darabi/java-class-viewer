@@ -11,9 +11,9 @@ import org.freeinternals.format.FileFormatException;
 import org.freeinternals.format.pdf.Texts;
 
 /**
- * See
+ * PDF basic object Stream, see
  * <pre>PDF 32000-1:2008</pre>
- * <code>7.3.8</code>: Stream Object.
+ * <code>7.3.8</code>: Stream Objects.
  *
  * @author Amos Shi
  */

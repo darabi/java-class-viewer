@@ -3,14 +3,15 @@ package org.freeinternals.format.pdf;
 import java.util.ResourceBundle;
 
 /**
+ * Texts used in User Interface.
  *
  * @author Amos Shi
  */
 public class Texts {
-    
+
     public static final String NewLine = "New Line";
     public static final String Signature = "Signature: ";
-
+    public static final String Space = "Space";
     private static final ResourceBundle res;
 
     static {

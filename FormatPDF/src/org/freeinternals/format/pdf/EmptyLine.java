@@ -20,7 +20,7 @@ public class EmptyLine extends FileComponent implements GenerateTreeNode {
      * The content of current line.
      */
     public final ASCIILine Line;
-    
+
     EmptyLine(PosDataInputStream stream, ASCIILine line) throws IOException, FileFormatException {
         super.startPos = stream.getPos() - line.Length();
         super.length = line.Length();

@@ -20,6 +20,7 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.format.FileFormatException;
 
 /**
+ * PDF File Object.
  *
  * @author Amos Shi
  * @see <a href="http://www.adobe.com/devnet/pdf/pdf_reference.html">PDF

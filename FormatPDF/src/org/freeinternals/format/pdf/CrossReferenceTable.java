@@ -12,7 +12,7 @@ import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.format.FileFormatException;
 
 /**
- * See
+ * PDF Cross-Reference Table, see
  * <pre>PDF 32000-1:2008</pre>
  * <code>7.5.4</code>: Cross-Reference Table.
  *

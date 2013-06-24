@@ -1,6 +1,7 @@
 package org.freeinternals.format.pdf;
 
 /**
+ * Static values of PDF file definition.
  *
  * @author Amos
  */

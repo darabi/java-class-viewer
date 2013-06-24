@@ -10,7 +10,7 @@ import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.format.FileFormatException;
 
 /**
- * See
+ * PDF File Trailer, see
  * <pre>PDF 32000-1:2008</pre>
  * <code>7.5.5</code>: File Trailer.
  *
@@ -19,7 +19,6 @@ import org.freeinternals.format.FileFormatException;
 public class Trailer extends FileComponent implements GenerateTreeNode {
 
     static final String SIGNATURE = "trailer";
-    
     /**
      * The first line of current object.
      */

@@ -10,12 +10,12 @@ import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.commonlib.core.PosDataInputStream.ASCIILine;
 import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
-import org.freeinternals.commonlib.util.DefaultFileComponent;
 import org.freeinternals.format.FileFormatException;
+import org.freeinternals.format.pdf.basicobj.Analysis;
 import org.freeinternals.format.pdf.basicobj.Stream;
 
 /**
- * See
+ * PDF Indirect Object, see
  * <pre>PDF 32000-1:2008</pre>
  * <code>7.3.10</code>: Indirect Object.
  *
@@ -93,7 +93,7 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         this.parseStartEnd(stream);
 
         // Furthur parse
-        this.parseStreamObject(stream);
+        this.parseObject(stream);
     }
 
     private void parseStartEnd(PosDataInputStream stream) throws IOException {
@@ -108,51 +108,58 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         } while (stream.getPos() < (stream.getBuf().length - 1));
     }
 
-    private void parseStreamObject(PosDataInputStream root) throws IOException, FileFormatException {
+    private void parseObject(PosDataInputStream root) throws IOException, FileFormatException {
         PosDataInputStream stream = root.getPartialStream(
                 super.startPos + this.NumberLen + this.SignatureStart.Length(),
                 super.length - this.NumberLen - this.SignatureStart.Length() - this.SignatureEnd.Length());
 
         // Filter Stream Object First
         ASCIILine line;
+        List<FileComponent> compStreams = new ArrayList<FileComponent>(2);
+
         while (stream.hasNext()) {
             line = stream.readASCIILine();
             if (line.Line.endsWith(Stream.SIGNATURE_START)) {
-                this.components.add(new Stream(stream, line));
+                compStreams.add(new Stream(stream, line));
             }
         }
 
-        // Analysis Object Before Stream Object
+        // -- Calculate the lastIndex
         int lastIndex = super.startPos + super.length - this.SignatureEnd.Length();
-        if (this.components.size() > 0) {
-            for (FileComponent comp : this.components) {
+        if (compStreams.size() > 0) {
+            for (FileComponent comp : compStreams) {
                 if (comp instanceof Stream) {
                     lastIndex = (lastIndex > comp.getStartPos()) ? comp.getStartPos() : lastIndex;
                 }
             }
         }
 
-        // Add the rest content
         int pos = super.startPos + this.NumberLen + this.SignatureStart.Length();
         int len = lastIndex - pos;
-        this.components.add(0, new DefaultFileComponent(
-                pos, len, "Content"));
         stream = root.getPartialStream(pos, len);
+        FileComponent comp;
+        Analysis analysis = new Analysis();
+
         while (stream.hasNext()) {
-            byte next1 = stream.readByte();
-            switch (next1){
-                case PDFStatics.DelimiterCharacter.LP:   //  '(' - Leteral String
-                    break;
-                case PDFStatics.DelimiterCharacter.LT:   //  '<' - Hexadecimal String; << Dictionary
-                    break;
-                case PDFStatics.DelimiterCharacter.SO:   //  '/' - Name
-                    break;
-                case PDFStatics.DelimiterCharacter.LS:   //  '[' - Array
-                    break;
-                default:
-                    // boolean, Numeric, null; Comment
-                    break;
-                    
+            comp = analysis.ParseNextObject(stream);
+            if (comp != null) {
+                this.components.add(comp);
+            } else {
+                // Continue Analysis
+                byte next1 = stream.readByte();
+                System.out.println(String.format("ERROR ======== IndirectObject.parseObject() - Object number = %d, Generation number = %d, Location = %d (%X), Value = %s",
+                        this.ObjectNumber,
+                        this.GenerationNumber,
+                        stream.getPos(),
+                        stream.getPos(),
+                        String.valueOf((char) next1)));
+            }
+        } // End while
+
+        // Add the stream object we've found earlier
+        if (compStreams.size() > 0) {
+            for (FileComponent compStream : compStreams) {
+                this.components.add(compStream);
             }
         }
     }

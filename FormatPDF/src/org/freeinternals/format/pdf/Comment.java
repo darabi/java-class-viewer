@@ -9,25 +9,25 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 
 /**
- * See
+ * PDF Comment, see
  * <pre>PDF 32000-1:2008</pre>
  * <code>7.2.3</code>: Comments.
- *  
+ *
  * @author Amos Shi
  */
-public class Comment extends FileComponent implements GenerateTreeNode{
+public class Comment extends FileComponent implements GenerateTreeNode {
 
     /**
      * Comment text.
      */
     public final String Text;
-    
+
     Comment(PosDataInputStream stream, ASCIILine line) throws IOException {
         super.startPos = stream.getPos() - line.Length();
         super.length = line.Length();
         this.Text = line.Line;
     }
-    
+
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
         JTreeNodeFileComponent nodeComp = new JTreeNodeFileComponent(
                 super.startPos,
@@ -44,5 +44,4 @@ public class Comment extends FileComponent implements GenerateTreeNode{
                 "New Line")));
         parentNode.add(nodeComment);
     }
-    
 }

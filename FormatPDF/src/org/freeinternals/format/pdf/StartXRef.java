@@ -10,7 +10,8 @@ import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.format.FileFormatException;
 
 /**
- * See
+ * PDF
+ * <code>startxref</code> Object in File Trailer, see
  * <pre>PDF 32000-1:2008</pre>
  * <code>7.5.5</code>: File Trailer.
  *
