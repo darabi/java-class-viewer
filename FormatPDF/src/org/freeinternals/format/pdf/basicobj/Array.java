@@ -24,12 +24,13 @@ public class Array extends FileComponent implements GenerateTreeNode {
     /**
      * Component of current object.
      */
-    private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(100));
+    private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(31));
 
-     Array(PosDataInputStream stream) throws IOException {
+    Array(PosDataInputStream stream) throws IOException {
         // System.out.println("==== PDF Array");   // Deubg output
         super.startPos = stream.getPos();
         this.parse(stream);
+        this.organizeArray();
         super.length = stream.getPos() - super.startPos;
     }
 
@@ -42,10 +43,8 @@ public class Array extends FileComponent implements GenerateTreeNode {
 
         byte next1;
         while (stream.hasNext()) {
-            comp = analysis.ParseNextObject(stream);
-            if (comp != null) {
-                this.components.add(comp);
-            } else {
+            comp = analysis.ParseNextObject(stream, this.components);
+            if (comp == null) {
                 next1 = stream.readByte();
                 if (next1 == PDFStatics.DelimiterCharacter.RS) {
                     // Stop current Dictionary Object
@@ -57,6 +56,9 @@ public class Array extends FileComponent implements GenerateTreeNode {
                 }
             }
         } // End While
+    }
+
+    private void organizeArray() {
     }
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {

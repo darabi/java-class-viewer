@@ -12,6 +12,7 @@ import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
 import org.freeinternals.format.FileFormatException;
 import org.freeinternals.format.pdf.basicobj.Analysis;
+import org.freeinternals.format.pdf.basicobj.Reference;
 import org.freeinternals.format.pdf.basicobj.Stream;
 
 /**
@@ -141,12 +142,11 @@ public class IndirectObject extends FileComponent implements GenerateTreeNode {
         Analysis analysis = new Analysis();
 
         while (stream.hasNext()) {
-            comp = analysis.ParseNextObject(stream);
-            if (comp != null) {
-                this.components.add(comp);
-            } else {
-                // Continue Analysis
+            comp = analysis.ParseNextObject(stream, this.components);
+            if (comp == null) {
+                // To Ensure Continue Analysis
                 byte next1 = stream.readByte();
+                // Show error message
                 System.out.println(String.format("ERROR ======== IndirectObject.parseObject() - Object number = %d, Generation number = %d, Location = %d (%X), Value = %s",
                         this.ObjectNumber,
                         this.GenerationNumber,

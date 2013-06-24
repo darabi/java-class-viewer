@@ -65,7 +65,7 @@ public class Stream extends FileComponent implements GenerateTreeNode {
      * <code>endstream</code>. </p>
      */
     public int getStreamLength() {
-        return this.length - this.SignatureLen - this.SignatureEnd.Length();
+        return this.length - this.SignatureLen - 1 - this.SignatureEnd.Length();
     }
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
@@ -92,8 +92,14 @@ public class Stream extends FileComponent implements GenerateTreeNode {
         nodeStream.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,
                 this.getStreamLength(),
-                "Stream Content")));
+                "Stream Content: Length = " + this.getStreamLength())));
         pos += this.getStreamLength();
+
+        nodeStream.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
+                pos,
+                1,
+                Texts.NewLine)));
+        pos += 1;
 
         nodeStream.add(new DefaultMutableTreeNode(new JTreeNodeFileComponent(
                 pos,

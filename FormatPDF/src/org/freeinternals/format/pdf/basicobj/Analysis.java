@@ -1,6 +1,7 @@
 package org.freeinternals.format.pdf.basicobj;
 
 import java.io.IOException;
+import java.util.List;
 import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.commonlib.util.DefaultFileComponent;
@@ -14,14 +15,11 @@ import org.freeinternals.format.pdf.Texts;
  */
 public class Analysis {
 
-    public FileComponent ParseNextObject(PosDataInputStream stream) throws IOException {
+    public FileComponent ParseNextObject(PosDataInputStream stream, List<FileComponent> components) throws IOException {
         FileComponent comp;
         byte next1 = stream.readByte();
         byte next2;
-//        System.out.println(String.format("Analysis.ParseNextObject(): location = %d (0x%X), next1 = '%c'",
-//                stream.getPos(),
-//                stream.getPos(),
-//                (char) next1));
+
         switch (next1) {
             case PDFStatics.WhiteSpace.LF:                                      // New Line
             case PDFStatics.WhiteSpace.CR:                                      // New Line
@@ -78,6 +76,9 @@ public class Analysis {
             case Reference.SIGNATURE:
                 stream.backward(1);
                 comp = new Reference(stream);                                   // '9 0 R' - Reference Indirect Object
+
+                this.MergeReferenceObjects(components, (Reference) comp);
+
                 break;
             default:                                                            // Unknown
                 stream.backward(1);
@@ -85,6 +86,49 @@ public class Analysis {
                 break;
         } // End Switch
 
+        components.add(comp);
         return comp;
+    }
+
+    /**
+     * Merge the former 2 objects before the {@link Reference} object 'R'. <p>
+     * Example:
+     * <pre>
+     * 5 0 obj
+     * /Type /XObject
+     * /Subtype /Image
+     * /Width 2038
+     * /Height 171
+     * /BitsPerComponent 4
+     * /Length 347
+     * /Filter 8 0 R
+     * </pre> </p> When we found the '
+     * <code>R</code>', we need to merge the former
+     * <code>8</code> and
+     * <code>0</code> together with the
+     * <code>R</code> object.
+     */
+    private void MergeReferenceObjects(List<FileComponent> components, Reference ref) {
+        int size = components.size();
+
+        boolean found = false;
+        int pdfObjectCounter = 0;
+        int i;
+        for (i = size - 1; i >= 0; i--) {
+            if (!(components.get(i) instanceof DefaultFileComponent)) {
+                pdfObjectCounter++;
+            }
+            if (pdfObjectCounter == 2) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            for (int j = size - 1; j >= i; j--) {
+                ref.formerComponents.add(0, components.get(j));
+                components.remove(j);
+            }
+        }
     }
 }

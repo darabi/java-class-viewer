@@ -9,7 +9,6 @@ import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
-import org.freeinternals.commonlib.util.DefaultFileComponent;
 import org.freeinternals.format.pdf.PDFStatics;
 import org.freeinternals.format.pdf.Texts;
 
@@ -33,12 +32,13 @@ public class Dictionary extends FileComponent implements GenerateTreeNode {
     /**
      * Component of current object.
      */
-    private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(100));
+    private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(31));
 
     Dictionary(PosDataInputStream stream) throws IOException {
         // System.out.println("==== PDF Dictionary");   // Deubg output
         super.startPos = stream.getPos();
         this.parse(stream);
+        this.organizeDictionary();
         super.length = stream.getPos() - super.startPos;
     }
 
@@ -53,10 +53,8 @@ public class Dictionary extends FileComponent implements GenerateTreeNode {
         byte next2;
         boolean stop = false;
         while (stream.hasNext()) {
-            comp = analysis.ParseNextObject(stream);
-            if (comp != null) {
-                this.components.add(comp);
-            } else {
+            comp = analysis.ParseNextObject(stream, this.components);
+            if (comp == null) {
                 next1 = stream.readByte();
                 switch (next1) {
                     // Dictionary Ends
@@ -78,6 +76,9 @@ public class Dictionary extends FileComponent implements GenerateTreeNode {
                 }
             }
         } // End While
+    }
+
+    private void organizeDictionary() {
     }
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
