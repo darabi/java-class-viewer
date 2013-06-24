@@ -3,12 +3,16 @@ package org.freeinternals.format.pdf.basicobj;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.commonlib.ui.GenerateTreeNode;
 import org.freeinternals.commonlib.ui.JTreeNodeFileComponent;
+import org.freeinternals.commonlib.util.DefaultFileComponent;
 import org.freeinternals.format.pdf.PDFStatics;
 import org.freeinternals.format.pdf.Texts;
 
@@ -33,13 +37,33 @@ public class Dictionary extends FileComponent implements GenerateTreeNode {
      * Component of current object.
      */
     private List<FileComponent> components = Collections.synchronizedList(new ArrayList<FileComponent>(31));
+    /**
+     * Dictionary entries. <p> The first element of each entry is the key and
+     * the second element is the value. The key shall be a name {@link Name}.
+     * The value may be any kind of object, including another dictionary. A
+     * dictionary entry whose value is null {@link Null} shall be treated the
+     * same as if the entry does not exist. </p> <p> The entries in a dictionary
+     * represent an associative table and as such shall be unordered even though
+     * an arbitrary order may be imposed upon them when written in a file. That
+     * ordering shall be ignored. </p> <p> Multiple entries in the same
+     * dictionary shall not have the same key. </p>
+     */
+    public final HashMap<String, FileComponent> DictionaryEntries = new HashMap<String, FileComponent>();
 
     Dictionary(PosDataInputStream stream) throws IOException {
-        // System.out.println("==== PDF Dictionary");   // Deubg output
         super.startPos = stream.getPos();
         this.parse(stream);
         this.organizeDictionary();
         super.length = stream.getPos() - super.startPos;
+
+        // Debug Output
+        System.out.println(this.toString());
+        Iterator it = this.DictionaryEntries.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry) it.next();
+            System.out.println(pairs.getKey() + " = " + pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        } // End while
     }
 
     private void parse(PosDataInputStream stream) throws IOException {
@@ -79,6 +103,30 @@ public class Dictionary extends FileComponent implements GenerateTreeNode {
     }
 
     private void organizeDictionary() {
+        String name = null;
+        int counter = 0;
+        for (FileComponent comp : this.components) {
+            if (comp instanceof DefaultFileComponent) {
+                continue;
+            }
+
+            counter++;
+
+            if (counter == 1) {
+                if (comp instanceof Name) {
+                    name = ((Name) comp).getName();
+                } else {
+                    System.out.println("==== ERROR!!! Incorrect Dictionary Content. " + this.toString());
+                    name = null;
+                }
+            } else if (counter == 2 && name != null) {
+                this.DictionaryEntries.put(name, comp);
+            }
+
+            if (counter >= 2) {
+                counter = 0;
+            }
+        }
     }
 
     public void generateTreeNode(DefaultMutableTreeNode parentNode) {
@@ -115,5 +163,13 @@ public class Dictionary extends FileComponent implements GenerateTreeNode {
                 Texts.Signature + SIGNATURE_END)));
 
         parentNode.add(nodeDic);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Dictionary Object: Start Position = %d, Length = %d, Component Count = %d",
+                super.startPos,
+                super.length,
+                this.components.size());
     }
 }

@@ -47,8 +47,12 @@ public final class Name extends FileComponent implements GenerateTreeNode {
         // System.out.println(this.toString());   // Deubg output
     }
 
-    public String getStringValue() {
-        // TODO - Change to the .getStringValue()
+    public String getName() {
+        // TODO - Change to the .getName() - Issue: No test case until now.
+        //        The following if-clause is used to search for such case
+        if (this.RawName.contains("#")) {
+            System.out.println(this.toString());
+        }
         return this.RawName;
     }
 
@@ -56,7 +60,7 @@ public final class Name extends FileComponent implements GenerateTreeNode {
         JTreeNodeFileComponent nodeComp = new JTreeNodeFileComponent(
                 super.startPos,
                 super.length,
-                "Name Object: " + this.getStringValue());
+                "Name Object: " + this.getName());
         DefaultMutableTreeNode nodeName = new DefaultMutableTreeNode(nodeComp);
 
         int pos = super.startPos;

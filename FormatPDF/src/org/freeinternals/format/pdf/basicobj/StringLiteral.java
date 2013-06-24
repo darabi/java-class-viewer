@@ -79,8 +79,8 @@ class StringLiteral extends FileComponent implements GenerateTreeNode {
         this.RawText = builder.toString();
     }
 
-    public String getStringValue() {
-        // TODO - Change to the .getStringValue()
+    public String getString() {
+        // TODO - Change to the .getString()
         return this.RawText;
     }
 
