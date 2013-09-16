@@ -6,6 +6,7 @@
  */
 package org.freeinternals.javaclassviewer.ui;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -39,6 +41,7 @@ public class JSplitPaneClassFile extends JSplitPane {
     private JBinaryViewer binaryViewer = null;
     private JScrollPane binaryViewerView = null;
     private JTextArea opcode = null;
+    private JTextPane report = null;
 
     /**
      * Creates a split panel from a Java class file byte array.
@@ -83,6 +86,14 @@ public class JSplitPaneClassFile extends JSplitPane {
         this.opcode.setFont(new Font(Font.DIALOG_INPUT, Font.PLAIN, 14));
         this.opcode.setEditable(false);
         tabbedPane.add("Opcode", new JScrollPane(this.opcode));
+        
+        // Class report
+        this.report = new JTextPane();
+        this.report.setAlignmentX(Component.LEFT_ALIGNMENT);
+        this.report.setEditable(false);
+        this.report.setBorder(null);
+        this.report.setContentType("text/html");
+        tabbedPane.add("Report", new JScrollPane(this.report));
 
         this.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         this.setDividerSize(5);
