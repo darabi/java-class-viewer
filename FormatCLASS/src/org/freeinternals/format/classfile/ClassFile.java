@@ -141,7 +141,13 @@ public class ClassFile {
         }
     }
 
-    private String getConstantUtf8Value(final int cpIndex)
+    /**
+     * Get a UTF-8 text from the constant pool.
+     * 
+     * @param  cpIndex Constant Pool object Index
+     * @return  The UTF-8 text
+     */
+    public String getConstantUtf8Value(final int cpIndex)
             throws FileFormatException {
         String returnValue = null;
 

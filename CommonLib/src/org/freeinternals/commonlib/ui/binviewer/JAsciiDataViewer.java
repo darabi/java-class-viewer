@@ -6,6 +6,7 @@
  */
 package org.freeinternals.commonlib.ui.binviewer;
 
+import org.freeinternals.commonlib.ui.HTMLKit;
 import javax.swing.JTextPane;
 import org.freeinternals.commonlib.ui.JBinaryViewer;
 
