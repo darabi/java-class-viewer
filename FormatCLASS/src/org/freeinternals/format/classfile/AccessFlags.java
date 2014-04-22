@@ -21,6 +21,9 @@ import java.io.IOException;
  *    ACC_SUPER      0x0020    Treat superclass methods specially when invoked by the invokespecial instruction.
  *    ACC_INTERFACE  0x0200    Is an interface, not a class.
  *    ACC_ABSTRACT   0x0400    Declared abstract; may not be instantiated.
+ *    ACC_SYNTHETIC  0x1000    Declared synthetic; not present in the source code.
+ *    ACC_ANNOTATION 0x2000    Declared as an annotation type.
+ *    ACC_ENUM       0x4000    Declared as an enum type
  * </pre>
  *
  * @author Amos Shi
@@ -53,6 +56,18 @@ public class AccessFlags extends U2ClassComponent {
      * Value for access flag {@code ACC_ABSTRACT}.
      */
     public static final int ACC_ABSTRACT = 0x0400;
+    /**
+     * Value for access flag {@code ACC_SYNTHETIC}.
+     */
+    public static final int ACC_SYNTHETIC = 0x1000;
+    /**
+     * Value for access flag {@code ACC_ANNOTATION}.
+     */
+    public static final int ACC_ANNOTATION = 0x2000;
+    /**
+     * Value for access flag {@code ACC_ENUM}.
+     */
+    public static final int ACC_ENUM = 0x4000;
 
     AccessFlags(final PosDataInputStream posDis)
             throws IOException {
@@ -100,7 +115,27 @@ public class AccessFlags extends U2ClassComponent {
             sb.append("abstract ");
             isFirstModifier = false;
         }
-
+        if ((this.value.value & AccessFlags.ACC_SYNTHETIC) > 0) {
+            if (isFirstModifier == false) {
+                sb.append(' ');
+            }
+            sb.append("synthetic ");
+            isFirstModifier = false;
+        }
+        if ((this.value.value & AccessFlags.ACC_ANNOTATION) > 0) {
+            if (isFirstModifier == false) {
+                sb.append(' ');
+            }
+            sb.append("@interface ");
+            isFirstModifier = false;
+        }
+        if ((this.value.value & AccessFlags.ACC_ENUM) > 0) {
+            if (isFirstModifier == false) {
+                sb.append(' ');
+            }
+            sb.append("enum ");
+            isFirstModifier = false;
+        }
 
         return sb.toString();
     }

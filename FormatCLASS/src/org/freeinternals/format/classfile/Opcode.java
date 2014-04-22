@@ -7,13 +7,17 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Opcode parser to interpret the Java {@code code} byte array into human readable text.
+ * Opcode parser to interpret the Java {@code code} byte array into human
+ * readable text.
  *
  * @author Amos Shi
  * @since JDK 6.0
- * @see <a href="http://www.freeinternals.org/mirror/java.sun.com/vmspec.2nded/Instructions.doc.html">
+ * @see <a
+ * href="http://www.freeinternals.org/mirror/java.sun.com/vmspec.2nded/Instructions.doc.html">
  * VM Spec: The Java Virtual Machine Instruction Set
  * </a>
  */
@@ -457,19 +461,26 @@ public final class Opcode {
      * @param classFile The {@link ClassFile} object contains the method
      * @return Readable string of the method source code
      */
-    public static String parseCode(final byte[] code, final ClassFile classFile) {
+    public static CodeResult parseCode(final byte[] code, final ClassFile classFile) {
         if ((code == null) || (code.length < 1)) {
             return null;
         }
+        
+        CodeResult codeResult = new CodeResult();
 
         final PosByteArrayInputStream pbais = new PosByteArrayInputStream(code);
         final PosDataInputStream pdis = new PosDataInputStream(pbais);
 
         final StringBuilder sb = new StringBuilder(code.length * 10);
+        OpcodeResult parseResult;
         while (pdis.getPos() < code.length) {
             try {
-                sb.append(parseOpcode(pdis, classFile));
+                parseResult = parseOpcode(pdis, classFile);
+                sb.append(parseResult.OpcodeText);
                 sb.append('\n');
+                if (parseResult.CPIndex1 != -1) {
+                    codeResult.CPIndexes.add(parseResult.CPIndex1);
+                }
             } catch (IOException ioe) {
                 //System.err.println(ioe.toString());
                 //ioe.printStackTrace();
@@ -477,13 +488,15 @@ public final class Opcode {
             }
         }
 
-        return sb.toString();
+        codeResult.OpcodeTexts = sb.toString();
+        return codeResult;
     }
 
-    private static String parseOpcode(final PosDataInputStream pdis, final ClassFile classFile)
+    private static OpcodeResult parseOpcode(final PosDataInputStream pdis, final ClassFile classFile)
             throws IOException {
         final int curPos = pdis.getPos();
         final int opcode = pdis.read();
+        OpcodeResult parseResult = new OpcodeResult();
 
         int byteValue = 0;
         int byteValue2 = 0;
@@ -595,6 +608,7 @@ public final class Opcode {
                 //   either must be a runtime constant of type int or float, 
                 //   or must be a symbolic reference to a string literal (?.1).
                 byteValue = pdis.readUnsignedByte();
+                parseResult.CPIndex1 = byteValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_ldc, byteValue, classFile.getCPDescription(byteValue));
                 break;
 
@@ -608,6 +622,7 @@ public final class Opcode {
                 //   either must be a runtime constant of type int or float, 
                 //   or must be a symbolic reference to a string literal (?.1). 
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_ldc_w, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -620,6 +635,7 @@ public final class Opcode {
                 // The runtime constant pool entry at the index must be a runtime constant of type long or double (?.1). 
                 // The numeric value of that runtime constant is pushed onto the operand stack as a long or double, respectively.
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_ldc2_w, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1353,7 +1369,6 @@ public final class Opcode {
 
             // if_icmp<cond>: if_icmpeq = 159 (0x9f) if_icmpne = 160 (0xa0) if_icmplt = 161 (0xa1) if_icmpge = 162 (0xa2) if_icmpgt = 163 (0xa3) if_icmple = 164 (0xa4)
             // Branch if int comparison succeeds
-
             case Opcode.op_if_icmpeq:
                 shortValue = pdis.readShort();
                 opcodeText = String.format(FORMAT_SD, Opcode.name_if_icmpeq, shortValue);
@@ -1479,6 +1494,7 @@ public final class Opcode {
                 // in which the field is to be found. 
                 // The referenced field is resolved (?.4.3.2). 
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_getstatic, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1490,6 +1506,7 @@ public final class Opcode {
                 // which gives the name and descriptor of the field as well as a symbolic reference to the class or interface 
                 // in which the field is to be found. The referenced field is resolved (?.4.3.2).
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_putstatic, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1501,6 +1518,7 @@ public final class Opcode {
                 // The runtime constant pool item at that index must be a symbolic reference to a field (?.1), 
                 // which gives the name and descriptor of the field as well as a symbolic reference to the class in which the field is to be found.
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_getfield, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1511,6 +1529,7 @@ public final class Opcode {
                 // The runtime constant pool item at that index must be a symbolic reference to a field (?.1), 
                 // which gives the name and descriptor of the field as well as a symbolic reference to the class in which the field is to be found.
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_putfield, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1528,24 +1547,28 @@ public final class Opcode {
                 //   or a member of a superclass of the current class, 
                 // then the class of objectref must be either the current class or a subclass of the current class.
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_invokevirtual, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
             // Invoke instance method; special handling for superclass, private, and instance initialization method invocations
             case Opcode.op_invokespecial:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_invokespecial, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
             // Invoke a class (static) method
             case Opcode.op_invokestatic:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_invokestatic, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
             // Invoke interface method
             case Opcode.op_invokeinterface:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 byteValue = pdis.readUnsignedByte();
                 pdis.skipBytes(1);
                 opcodeText = String.format("%s interface=%d [%s], nargs=%d",
@@ -1558,6 +1581,7 @@ public final class Opcode {
             // Create new object
             case Opcode.op_new:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_new, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1570,6 +1594,7 @@ public final class Opcode {
             // Create new array of reference
             case Opcode.op_anewarray:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_anewarray, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1584,12 +1609,14 @@ public final class Opcode {
             // Check whether object is of given type
             case Opcode.op_checkcast:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_checkcast, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
             // Determine if object is of given type
             case Opcode.op_instanceof:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 opcodeText = String.format(FORMAT_SDS, Opcode.name_instanceof, shortValue, classFile.getCPDescription(shortValue));
                 break;
 
@@ -1609,6 +1636,7 @@ public final class Opcode {
             // Create new multidimensional array
             case Opcode.op_multianewarray:
                 shortValue = pdis.readUnsignedShort();
+                parseResult.CPIndex1 = shortValue;
                 byteValue = pdis.readUnsignedByte();
                 opcodeText = String.format("%s index=%d [%s] dimensions=%d",
                         Opcode.name_instanceof,
@@ -1645,7 +1673,6 @@ public final class Opcode {
                 break;
 
             // Reserved opcodes
-
             case Opcode.op_breakpoint:
                 opcodeText = "[Reserved] - " + Opcode.name_breakpoint;
                 break;
@@ -1662,11 +1689,14 @@ public final class Opcode {
                 opcodeText = "[Unknown opcode]";
         }
 
-        //return String.format("%04d: %s", curPos, opcodeText);
-        return String.format("opcode [%02X] - %04d: %s", opcode, curPos, opcodeText);
+        
+        parseResult.OpcodeText = String.format("opcode [%02X] - %04d: %s", opcode, curPos, opcodeText);
+        return parseResult;
     }
 
-    /** Used for opcode newarray only. */
+    /**
+     * Used for opcode newarray only.
+     */
     private static String getOpcodeNewarrayAtype(final int type) {
         String value;
         switch (type) {
@@ -1842,5 +1872,17 @@ public final class Opcode {
 
         return opcodeText;
     }
-}
 
+    public static class CodeResult {
+
+        public String OpcodeTexts;
+        public List<Integer> CPIndexes = new ArrayList<Integer>();
+    }
+
+    private static class OpcodeResult {
+
+        String OpcodeText;
+        int CPIndex1 = -1;
+    }
+
+}

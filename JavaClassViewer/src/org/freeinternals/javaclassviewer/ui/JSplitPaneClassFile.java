@@ -24,10 +24,12 @@ import org.freeinternals.commonlib.ui.HTMLKit;
 import org.freeinternals.commonlib.ui.JBinaryViewer;
 import org.freeinternals.commonlib.ui.JPanelForTree;
 import org.freeinternals.format.FileFormatException;
+import org.freeinternals.format.classfile.AbstractCPInfo;
 import org.freeinternals.format.classfile.ClassFile;
 import org.freeinternals.format.classfile.FieldInfo;
 import org.freeinternals.format.classfile.MethodInfo;
 import org.freeinternals.format.classfile.Opcode;
+import org.freeinternals.format.classfile.Opcode.CodeResult;
 
 /**
  * A split panel created from a class file byte array.
@@ -42,7 +44,7 @@ public class JSplitPaneClassFile extends JSplitPane {
     private ClassFile classFile;
     private JBinaryViewer binaryViewer = null;
     private JScrollPane binaryViewerView = null;
-    private JTextArea opcode = null;
+    private JTextPane opcode = null;
     private JTextPane report = null;
 
     /**
@@ -82,9 +84,12 @@ public class JSplitPaneClassFile extends JSplitPane {
         tabbedPane.add("Class File", this.binaryViewerView);
 
         // Construct opcode viewer
-        this.opcode = new JTextArea();
-        this.opcode.setFont(new Font(Font.DIALOG_INPUT, Font.PLAIN, 14));
+        this.opcode = new JTextPane();
+        this.opcode.setAlignmentX(Component.LEFT_ALIGNMENT);
+        // this.opcode.setFont(new Font(Font.DIALOG_INPUT, Font.PLAIN, 14));
         this.opcode.setEditable(false);
+        this.opcode.setBorder(null);
+        this.opcode.setContentType("text/html");
         tabbedPane.add("Opcode", new JScrollPane(this.opcode));
 
         // Class report
@@ -121,16 +126,36 @@ public class JSplitPaneClassFile extends JSplitPane {
                 if (objTncc.getText().equals("code")) {
                     //System.out.println("code");
                     final byte[] data = this.classFile.getClassByteArray(objTncc.getStartPos(), objTncc.getLength());
-
-                    this.opcode.append(Tool.getByteDataHexView(data));
-                    this.opcode.append("\n");
-                    this.opcode.append(Opcode.parseCode(data, this.classFile));
+                    this.generateOpcodeParseResult(data);
                 }
             }
         }
+    }
 
-        // Print out current scrool bar position.
-        //System.out.println("Max = " + this.binaryViewerView.getVerticalScrollBar().getMaximum() + ", current = " + this.binaryViewerView.getVerticalScrollBar().getValue());
+    private void generateOpcodeParseResult(byte[] opcodeData) {
+        StringBuilder sb = new StringBuilder(1024);
+        sb.append(HTMLKit.Start());
+
+        // The Extracted Code
+        sb.append("<pre>");
+        sb.append(Tool.getByteDataHexView(opcodeData));
+        sb.append("\n");
+        CodeResult codeResult = Opcode.parseCode(opcodeData, this.classFile);
+        sb.append(codeResult.OpcodeTexts);
+        sb.append("</pre>");
+
+        // The Reference Object
+        if (!codeResult.CPIndexes.isEmpty()) {
+            sb.append("<ol>");
+            for (Integer i : codeResult.CPIndexes) {
+                sb.append(String.format("<li>%s</li>", HTMLKit.EscapeFilter(this.classFile.getCPDescription(i))));
+            }
+            sb.append("</ol>");
+        }
+
+        sb.append(HTMLKit.End());
+        this.opcode.setText(sb.toString());
+
     }
 
     private void generateClassReport() {
@@ -138,6 +163,32 @@ public class JSplitPaneClassFile extends JSplitPane {
         sb.append(HTMLKit.Start());
 
         int count;
+
+        // Constant Pool
+        count = this.classFile.getCPCount().getValue();
+        sb.append(String.format("Constant Pool Count: %d", count));
+        sb.append(HTMLKit.NewLine());
+        if (count > 0) {
+            AbstractCPInfo[] CPInfoList = this.classFile.getConstantPool();
+
+            // Constant Pool - by Type
+            sb.append("Constant Pool - Class");
+            this.generateCPTypeReport(sb, CPInfoList, count, AbstractCPInfo.CONSTANT_Class);
+            sb.append("Constant Pool - Field");
+            this.generateCPTypeReport(sb, CPInfoList, count, AbstractCPInfo.CONSTANT_Fieldref);
+            sb.append("Constant Pool - Method");
+            this.generateCPTypeReport(sb, CPInfoList, count, AbstractCPInfo.CONSTANT_Methodref);
+
+            // Constant Pool Object List
+            sb.append("Constant Pool Object List");
+            sb.append(HTMLKit.NewLine());
+            sb.append("<ol>");
+            for (int i = 1; i < count; i++) {
+                sb.append(String.format("<li>%s</li>", HTMLKit.EscapeFilter(this.classFile.getCPDescription(i))));
+            }
+            sb.append("</ol>");
+        }
+
         // Fields
         count = this.classFile.getFieldCount().getValue();
         sb.append(String.format("Field Count: %d", count));
@@ -145,8 +196,8 @@ public class JSplitPaneClassFile extends JSplitPane {
         if (count > 0) {
             FieldInfo[] fields = this.classFile.getFields();
             sb.append("<ol>");
-            for (int i = 0; i < fields.length; i++) {
-                sb.append(String.format("<li>%s</li>", HTMLKit.EscapeFilter(fields[i].getDeclaration())));
+            for (FieldInfo field : fields) {
+                sb.append(String.format("<li>%s</li>", HTMLKit.EscapeFilter(field.getDeclaration())));
             }
             sb.append("</ol>");
         }
@@ -159,8 +210,8 @@ public class JSplitPaneClassFile extends JSplitPane {
         if (count > 0) {
             MethodInfo[] methods = this.classFile.getMethods();
             sb.append("<ol>");
-            for (int i = 0; i < methods.length; i++) {
-                sb.append(String.format("<li>%s</li>", HTMLKit.EscapeFilter(methods[i].getDeclaration())));
+            for (MethodInfo method : methods) {
+                sb.append(String.format("<li>%s</li>", HTMLKit.EscapeFilter(method.getDeclaration())));
             }
             sb.append("</ol>");
         }
@@ -168,5 +219,17 @@ public class JSplitPaneClassFile extends JSplitPane {
 
         sb.append(HTMLKit.End());
         this.report.setText(sb.toString());
+    }
+
+    private void generateCPTypeReport(StringBuilder sb, AbstractCPInfo[] CPInfoList, int count, short tag) {
+        sb.append(HTMLKit.NewLine());
+        sb.append("<ul>");
+        for (int i = 1; i < count; i++) {
+            if (CPInfoList[i].getTag() == tag) {
+                sb.append(String.format("<li>%d. %s</li>", i,
+                        HTMLKit.EscapeFilter(this.classFile.getCPDescription(i))));
+            }
+        }
+        sb.append("</ul>");
     }
 }
