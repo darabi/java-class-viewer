@@ -28,7 +28,7 @@ import org.freeinternals.format.classfile.MethodInfo;
 public class JTreeClassFile extends JTree {
 
     private static final long serialVersionUID = 4876543219876500000L;
-    private static int STARTPOS_constant_pool = 10;
+    private static final int STARTPOS_constant_pool = 10;
     private final ClassFile classFile;
     DefaultMutableTreeNode root = null;
 
@@ -210,7 +210,7 @@ public class JTreeClassFile extends JTree {
                         fields[i].getStartPos(),
                         fields[i].getLength(),
                         String.format("field %d: %s", i + 1, fields[i].getDeclaration())));
-                JTreeField.generateTreeNode(fieldNode, fields[i]);
+                JTreeField.generateTreeNode(fieldNode, fields[i], classFile);
                 fieldsNode.add(fieldNode);
                 fieldNode = null;
             }
@@ -243,7 +243,7 @@ public class JTreeClassFile extends JTree {
                         methods[i].getStartPos(),
                         methods[i].getLength(),
                         String.format("method %d: %s", i + 1, methods[i].getDeclaration())));
-                JTreeMethod.generateTreeNode(methodNode, methods[i]);
+                JTreeMethod.generateTreeNode(methodNode, methods[i], this.classFile);
                 methodsNode.add(methodNode);
                 methodNode = null;
             }
@@ -276,7 +276,7 @@ public class JTreeClassFile extends JTree {
                         attrs[i].getStartPos(),
                         attrs[i].getLength(),
                         i + ". " + attrs[i].getName()));
-                JTreeAttribute.generateTreeNode(attrNode, attrs[i]);
+                JTreeAttribute.generateTreeNode(attrNode, attrs[i], this.classFile);
                 attrsNode.add(attrNode);
                 attrNode = null;
             }

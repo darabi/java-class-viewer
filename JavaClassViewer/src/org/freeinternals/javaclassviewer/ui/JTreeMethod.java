@@ -8,6 +8,7 @@ package org.freeinternals.javaclassviewer.ui;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.freeinternals.format.classfile.AttributeInfo;
+import org.freeinternals.format.classfile.ClassFile;
 import org.freeinternals.format.classfile.MethodInfo;
 
 /**
@@ -20,7 +21,10 @@ final class JTreeMethod {
     private JTreeMethod() {
     }
 
-    public static void generateTreeNode(final DefaultMutableTreeNode rootNode, final MethodInfo method_info)
+    public static void generateTreeNode(
+            final DefaultMutableTreeNode rootNode,
+            final MethodInfo method_info,
+            final ClassFile classFile)
             throws InvalidTreeNodeException {
         if (method_info == null) {
             return;
@@ -28,19 +32,22 @@ final class JTreeMethod {
 
         final int startPos = method_info.getStartPos();
         final int attributesCount = method_info.getAttributesCount();
+        int cp_index;
 
         rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
                 startPos,
                 2,
                 "access_flags: " + method_info.getAccessFlags() + ", " + method_info.getModifiers())));
+        cp_index = method_info.getNameIndex();
         rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
                 startPos + 2,
                 2,
-                "name_index: " + method_info.getNameIndex())));
+                String.format("name_index: %d [%s]", cp_index, classFile.getCPDescription(cp_index)))));
+        cp_index = method_info.getDescriptorIndex();
         rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
                 startPos + 4,
                 2,
-                "descriptor_index: " + method_info.getDescriptorIndex())));
+                String.format("descriptor_index: %d [%s]", cp_index, classFile.getCPDescription(cp_index)) )));
         rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
                 startPos + 6,
                 2,
@@ -61,7 +68,7 @@ final class JTreeMethod {
                         attr.getStartPos(),
                         attr.getLength(),
                         String.format("%d. %s", i + 1, attr.getName())));
-                JTreeAttribute.generateTreeNode(treeNodeAttrItem, attr);
+                JTreeAttribute.generateTreeNode(treeNodeAttrItem, attr, classFile);
                 treeNodeAttr.add(treeNodeAttrItem);
                 treeNodeAttrItem = null;
             }

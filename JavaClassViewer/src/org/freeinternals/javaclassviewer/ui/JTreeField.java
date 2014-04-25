@@ -8,6 +8,7 @@ package org.freeinternals.javaclassviewer.ui;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.freeinternals.format.classfile.AttributeInfo;
+import org.freeinternals.format.classfile.ClassFile;
 import org.freeinternals.format.classfile.FieldInfo;
 
 /**
@@ -20,7 +21,10 @@ final class JTreeField {
     private JTreeField() {
     }
 
-    public static void generateTreeNode(final DefaultMutableTreeNode rootNode, final FieldInfo field_info)
+    public static void generateTreeNode(
+            final DefaultMutableTreeNode rootNode,
+            final FieldInfo field_info,
+            final ClassFile classFile)
             throws InvalidTreeNodeException {
         if (field_info == null) {
             return;
@@ -62,7 +66,7 @@ final class JTreeField {
                         attr.getStartPos(),
                         attr.getLength(),
                         String.format("%d. %s", i + 1, attr.getName())));
-                JTreeAttribute.generateTreeNode(treeNodeAttrItem, attr);
+                JTreeAttribute.generateTreeNode(treeNodeAttrItem, attr, classFile);
                 treeNodeAttr.add(treeNodeAttrItem);
                 treeNodeAttrItem = null;
             }
