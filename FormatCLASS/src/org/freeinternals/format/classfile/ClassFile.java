@@ -113,7 +113,6 @@ public class ClassFile {
             }
         }
 
-
         // Analysis method declarations
         if (this.methods_count.getValue() > 0) {
             String mtdReturnType;
@@ -143,9 +142,9 @@ public class ClassFile {
 
     /**
      * Get a UTF-8 text from the constant pool.
-     * 
-     * @param  cpIndex Constant Pool object Index
-     * @return  The UTF-8 text
+     *
+     * @param cpIndex Constant Pool object Index
+     * @return The UTF-8 text
      */
     public String getConstantUtf8Value(final int cpIndex)
             throws FileFormatException {
@@ -552,56 +551,58 @@ public class ClassFile {
         public String getCPDescr(final int index) {
             final StringBuilder sb = new StringBuilder(40);
 
-            switch (ClassFile.this.constant_pool[index].getTag()) {
-                case AbstractCPInfo.CONSTANT_Utf8:
-                    sb.append("Utf8: ");
-                    sb.append(this.getDescr_Utf8((ConstantUtf8Info) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Integer:
-                    sb.append("Integer: ");
-                    sb.append(this.getDescr_Integer((ConstantIntegerInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Float:
-                    sb.append("Float: ");
-                    sb.append(this.getDescr_Float((ConstantFloatInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Long:
-                    sb.append("Long: ");
-                    sb.append(this.getDescr_Long((ConstantLongInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Double:
-                    sb.append("Double: ");
-                    sb.append(this.getDescr_Double((ConstantDoubleInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Class:
-                    sb.append("Class: ");
-                    sb.append(this.getDescr_Class((ConstantClassInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_String:
-                    sb.append("String: ");
-                    sb.append(this.getDescr_String((ConstantStringInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Fieldref:
-                    sb.append("Fieldref: ");
-                    sb.append(this.getDescr_Fieldref((ConstantFieldrefInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_Methodref:
-                    sb.append("Methodref: ");
-                    sb.append(this.getDescr_Methodref((ConstantMethodrefInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_InterfaceMethodref:
-                    sb.append("InterfaceMethodref: ");
-                    sb.append(this.getDescr_InterfaceMethodref((ConstantInterfaceMethodrefInfo) ClassFile.this.constant_pool[index]));
-                    break;
-                case AbstractCPInfo.CONSTANT_NameAndType:
-                    sb.append("NameAndType: ");
-                    sb.append(this.getDescr_NameAndType(
-                            (ConstantNameAndTypeInfo) ClassFile.this.constant_pool[index],
-                            ClassFile.Descr_NameAndType.RAW));
-                    break;
-                default:
-                    sb.append("!!! Un-supported CP type.");
-                    break;
+            if (ClassFile.this.constant_pool[index] != null) {
+                switch (ClassFile.this.constant_pool[index].getTag()) {
+                    case AbstractCPInfo.CONSTANT_Utf8:
+                        sb.append("Utf8: ");
+                        sb.append(this.getDescr_Utf8((ConstantUtf8Info) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Integer:
+                        sb.append("Integer: ");
+                        sb.append(this.getDescr_Integer((ConstantIntegerInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Float:
+                        sb.append("Float: ");
+                        sb.append(this.getDescr_Float((ConstantFloatInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Long:
+                        sb.append("Long: ");
+                        sb.append(this.getDescr_Long((ConstantLongInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Double:
+                        sb.append("Double: ");
+                        sb.append(this.getDescr_Double((ConstantDoubleInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Class:
+                        sb.append("Class: ");
+                        sb.append(this.getDescr_Class((ConstantClassInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_String:
+                        sb.append("String: ");
+                        sb.append(this.getDescr_String((ConstantStringInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Fieldref:
+                        sb.append("Fieldref: ");
+                        sb.append(this.getDescr_Fieldref((ConstantFieldrefInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_Methodref:
+                        sb.append("Methodref: ");
+                        sb.append(this.getDescr_Methodref((ConstantMethodrefInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_InterfaceMethodref:
+                        sb.append("InterfaceMethodref: ");
+                        sb.append(this.getDescr_InterfaceMethodref((ConstantInterfaceMethodrefInfo) ClassFile.this.constant_pool[index]));
+                        break;
+                    case AbstractCPInfo.CONSTANT_NameAndType:
+                        sb.append("NameAndType: ");
+                        sb.append(this.getDescr_NameAndType(
+                                (ConstantNameAndTypeInfo) ClassFile.this.constant_pool[index],
+                                ClassFile.Descr_NameAndType.RAW));
+                        break;
+                    default:
+                        sb.append("!!! Un-supported CP type.");
+                        break;
+                }
             }
 
             return sb.toString();

@@ -225,7 +225,7 @@ public class JSplitPaneClassFile extends JSplitPane {
         sb.append(HTMLKit.NewLine());
         sb.append("<ul>");
         for (int i = 1; i < count; i++) {
-            if (CPInfoList[i].getTag() == tag) {
+            if (CPInfoList[i] != null && CPInfoList[i].getTag() == tag) {
                 sb.append(String.format("<li>%d. %s</li>", i,
                         HTMLKit.EscapeFilter(this.classFile.getCPDescription(i))));
             }
