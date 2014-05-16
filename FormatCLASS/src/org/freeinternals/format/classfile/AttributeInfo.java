@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
 /**
@@ -136,26 +137,37 @@ public class AttributeInfo extends ClassComponent {
         attrNameIndex.value = posDataInputStream.readUnsignedShort();
         if (AbstractCPInfo.CONSTANT_Utf8 == cp[attrNameIndex.value].tag.value) {
             final String type = ((ConstantUtf8Info) cp[attrNameIndex.value]).getValue();
-            if (TypeConstantValue.equals(type)) {
-                attr = new AttributeConstantValue(attrNameIndex, type, posDataInputStream);
-            } else if (TypeCode.equals(type)) {
-                attr = new AttributeCode(attrNameIndex, type, posDataInputStream, cp);
-            } else if (TypeExceptions.equals(type)) {
-                attr = new AttributeExceptions(attrNameIndex, type, posDataInputStream);
-            } else if (TypeInnerClasses.equals(type)) {
-                attr = new AttributeInnerClasses(attrNameIndex, type, posDataInputStream);
-            } else if (TypeSynthetic.equals(type)) {
-                attr = new AttributeSynthetic(attrNameIndex, type, posDataInputStream);
-            } else if (TypeSourceFile.equals(type)) {
-                attr = new AttributeSourceFile(attrNameIndex, type, posDataInputStream);
-            } else if (TypeLineNumberTable.equals(type)) {
-                attr = new AttributeLineNumberTable(attrNameIndex, type, posDataInputStream);
-            } else if (TypeLocalVariableTable.equals(type)) {
-                attr = new AttributeLocalVariableTable(attrNameIndex, type, posDataInputStream);
-            } else if (TypeDeprecated.equals(type)) {
-                attr = new AttributeDeprecated(attrNameIndex, type, posDataInputStream);
-            } else {
-                attr = new AttributeExtended(attrNameIndex, Extended + type, posDataInputStream);
+            switch (type) {
+                case TypeConstantValue:
+                    attr = new AttributeConstantValue(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeCode:
+                    attr = new AttributeCode(attrNameIndex, type, posDataInputStream, cp);
+                    break;
+                case TypeExceptions:
+                    attr = new AttributeExceptions(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeInnerClasses:
+                    attr = new AttributeInnerClasses(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeSynthetic:
+                    attr = new AttributeSynthetic(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeSourceFile:
+                    attr = new AttributeSourceFile(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeLineNumberTable:
+                    attr = new AttributeLineNumberTable(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeLocalVariableTable:
+                    attr = new AttributeLocalVariableTable(attrNameIndex, type, posDataInputStream);
+                    break;
+                case TypeDeprecated:
+                    attr = new AttributeDeprecated(attrNameIndex, type, posDataInputStream);
+                    break;
+                default:
+                    attr = new AttributeExtended(attrNameIndex, Extended + type, posDataInputStream);
+                    break;
             }
         } else {
             throw new FileFormatException(String.format("Attribute name_index is not CONSTANT_Utf8. Constant index = %d, type = %d.", attrNameIndex.value, cp[attrNameIndex.value].tag.value));
@@ -167,7 +179,7 @@ public class AttributeInfo extends ClassComponent {
     /**
      * Verify the current class file input stream position is correct.
      *
-     * @param endPos Current postion
+     * @param endPos Current position
      * @throws org.freeinternals.classfile.core.ClassFormatException
      */
     protected void checkSize(final int endPos)

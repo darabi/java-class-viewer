@@ -6,6 +6,8 @@
  */
 package org.freeinternals.format.classfile;
 
+import org.freeinternals.commonlib.core.PosDataInputStream;
+
 /**
  * Attributes count of a {@code class} or {@code interface}.
  * It is the {@code attributes_count} in {@code ClassFile} structure.
@@ -13,7 +15,7 @@ package org.freeinternals.format.classfile;
  * @author Amos Shi
  * @since JDK 6.0
  * @see ClassFile#getAttributeCount()
- * @see <a href="http://www.freeinternals.org/mirror/java.sun.com/vmspec.2nded/ClassFile.doc.html#74353">
+ * @see <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html">
  * VM Spec: The ClassFile Structure
  * </a>
  */

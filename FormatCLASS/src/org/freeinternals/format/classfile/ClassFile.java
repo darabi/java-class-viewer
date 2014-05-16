@@ -9,6 +9,8 @@ package org.freeinternals.format.classfile;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.freeinternals.commonlib.core.PosByteArrayInputStream;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
 /**
@@ -48,7 +50,7 @@ import org.freeinternals.format.FileFormatException;
  */
 public class ClassFile {
 
-    private byte[] classByteArray;
+    private final byte[] classByteArray;
     private PosDataInputStream posDataInputStream;
     /**
      * Magic number of {@code class} file.
@@ -82,8 +84,7 @@ public class ClassFile {
      *
      * @param classByteArray Byte array of a class file
      * @throws java.io.IOException Error happened when reading the byte array
-     * @throws org.freeinternals.classfile.core.ClassFormatException The input
-     * parameter {@code classByteArray} is not a valid class
+     * @throws org.freeinternals.format.FileFormatException
      */
     public ClassFile(final byte[] classByteArray)
             throws java.io.IOException, FileFormatException {
@@ -145,6 +146,7 @@ public class ClassFile {
      *
      * @param cpIndex Constant Pool object Index
      * @return The UTF-8 text
+     * @throws org.freeinternals.format.FileFormatException
      */
     public String getConstantUtf8Value(final int cpIndex)
             throws FileFormatException {
@@ -458,21 +460,22 @@ public class ClassFile {
                         ClassFile.this.constant_pool[i] = new ConstantNameAndTypeInfo(ClassFile.this.posDataInputStream);
                         break;
 
+                    case AbstractCPInfo.CONSTANT_MethodHandle:
+                        ClassFile.this.constant_pool[i] = new ConstantMethodHandleInfo(ClassFile.this.posDataInputStream);
+                        break;
+
+                    case AbstractCPInfo.CONSTANT_MethodType:
+                        ClassFile.this.constant_pool[i] = new ConstantMethodTypeInfo(ClassFile.this.posDataInputStream);
+                        break;
+
+                    case AbstractCPInfo.CONSTANT_InvokeDynamic:
+                        ClassFile.this.constant_pool[i] = new ConstantInvokeDynamicInfo(ClassFile.this.posDataInputStream);
+                        break;
+
                     default:
                         throw new FileFormatException(
                                 String.format("Unreconizable constant pool type found. Constant pool tag: [%d]; class file offset: [%d].", tag, ClassFile.this.posDataInputStream.getPos() - 1));
                 }
-
-                // -- Debug information.
-//                if (ClassFile.this.constant_pool[i] != null)
-//                {
-//                    System.out.print(ClassFile.this.constant_pool[i].getDescription());
-//                }
-//                else
-//                {
-//                    System.out.print(ClassFile.this.constant_pool[i-1].getDescription());
-//                }
-//                System.out.println ();
             }
         }
 
@@ -598,6 +601,11 @@ public class ClassFile {
                         sb.append(this.getDescr_NameAndType(
                                 (ConstantNameAndTypeInfo) ClassFile.this.constant_pool[index],
                                 ClassFile.Descr_NameAndType.RAW));
+                        break;
+                    case AbstractCPInfo.CONSTANT_MethodHandle:
+                    case AbstractCPInfo.CONSTANT_MethodType:
+                    case AbstractCPInfo.CONSTANT_InvokeDynamic:
+                        sb.append(ClassFile.this.constant_pool[index].getDescription());
                         break;
                     default:
                         sb.append("!!! Un-supported CP type.");

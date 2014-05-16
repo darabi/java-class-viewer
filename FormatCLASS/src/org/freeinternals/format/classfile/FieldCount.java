@@ -6,6 +6,8 @@
  */
 package org.freeinternals.format.classfile;
 
+import org.freeinternals.commonlib.core.PosDataInputStream;
+
 /**
  * Fields Count of a {@code class} or {@code interface}. 
  * It is the {@code fields_count} in {@code ClassFile} structure.

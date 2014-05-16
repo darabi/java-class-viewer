@@ -104,7 +104,7 @@ public interface DataInputEx {
      * Reads until <code>b</code>, or the end of the buffer as an ASCII
      * String.
      *
-     * @param the terminator byte
+     * @param end
      * @return the <code>String</code> value read.
      * @throws IOException
      */
@@ -112,11 +112,14 @@ public interface DataInputEx {
 
     /**
      * Read until a null terminator, or the end of the buffer as binary.
+     * @return 
+     * @throws java.io.IOException
      */
     byte[] readBinary() throws IOException;
 
     /**
      * Skip to the end of the buffer.
+     * @throws java.io.IOException
      */
     void skipToEnd() throws IOException;
 

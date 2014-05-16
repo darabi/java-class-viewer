@@ -6,6 +6,8 @@
  */
 package org.freeinternals.format.classfile;
 
+import org.freeinternals.commonlib.core.PosDataInputStream;
+
 /**
  * Minor version of a {@code class} file.
  * It is the {@code minor_version} in {@code ClassFile} structure.

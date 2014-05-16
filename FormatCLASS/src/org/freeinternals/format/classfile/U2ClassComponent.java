@@ -8,6 +8,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 
 /**
  * Super class for all simple components which have only one 16-bit ({@link u2}) field in a {@code class} file.

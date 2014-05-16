@@ -6,6 +6,8 @@
  */
 package org.freeinternals.format.classfile;
 
+import org.freeinternals.commonlib.core.PosDataInputStream;
+
 /**
  * Constant Pool Count of a {@code class} or {@code interface}.
  * It is the {@code constant_pool_count} in {@code ClassFile} structure.

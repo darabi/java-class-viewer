@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 
 /**
  * {@code This} class of a {@code class} or {@code interface}.

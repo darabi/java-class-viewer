@@ -6,6 +6,8 @@
  */
 package org.freeinternals.format.classfile;
 
+import org.freeinternals.commonlib.core.PosDataInputStream;
+
 /**
  * Methods Count of a {@code class} or {@code interface}.
  * It is the {@code methods_count} in {@code ClassFile} structure.

@@ -9,6 +9,8 @@ package org.freeinternals.format.classfile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.freeinternals.commonlib.core.PosByteArrayInputStream;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 
 /**
  * Opcode parser to interpret the Java {@code code} byte array into human

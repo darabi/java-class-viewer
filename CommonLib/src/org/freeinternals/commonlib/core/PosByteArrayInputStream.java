@@ -27,7 +27,7 @@ public class PosByteArrayInputStream extends ByteArrayInputStream {
         this.pos = i;
     }
 
-    int getPos() {
+    public int getPos() {
         return this.pos;
     }
 

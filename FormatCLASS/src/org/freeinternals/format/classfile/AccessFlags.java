@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 
 /**
  * Access Flag of a {@code class} or {@code interface}.

@@ -115,6 +115,31 @@ public abstract class AbstractCPInfo extends ClassComponent {
      * </a>
      */
     public static final short CONSTANT_NameAndType = 12;
+    /**
+     * The value for constant type {@code CONSTANT_MethodHandle}.
+     *
+     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4.8">
+     * VM Spec: The CONSTANT_MethodHandle Structure
+     * </a>
+     */
+    public static final short CONSTANT_MethodHandle = 15;
+    /**
+     * The value for constant type {@code CONSTANT_MethodType}.
+     *
+     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4.9">
+     * VM Spec: The CONSTANT_MethodType Structure
+     * </a>
+     */
+    public static final short CONSTANT_MethodType = 16;
+    /**
+     * The value for constant type {@code CONSTANT_InvokeDynamic}.
+     *
+     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4.10">
+     * VM Spec: The CONSTANT_InvokeDynamic Structure
+     * </a>
+     */
+    public static final short CONSTANT_InvokeDynamic = 18;
+
     transient u1 tag;
 
     AbstractCPInfo() {

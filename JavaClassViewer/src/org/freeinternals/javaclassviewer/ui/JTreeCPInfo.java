@@ -14,7 +14,10 @@ import org.freeinternals.format.classfile.ConstantFieldrefInfo;
 import org.freeinternals.format.classfile.ConstantFloatInfo;
 import org.freeinternals.format.classfile.ConstantIntegerInfo;
 import org.freeinternals.format.classfile.ConstantInterfaceMethodrefInfo;
+import org.freeinternals.format.classfile.ConstantInvokeDynamicInfo;
 import org.freeinternals.format.classfile.ConstantLongInfo;
+import org.freeinternals.format.classfile.ConstantMethodHandleInfo;
+import org.freeinternals.format.classfile.ConstantMethodTypeInfo;
 import org.freeinternals.format.classfile.ConstantMethodrefInfo;
 import org.freeinternals.format.classfile.ConstantNameAndTypeInfo;
 import org.freeinternals.format.classfile.ConstantStringInfo;
@@ -27,7 +30,7 @@ import org.freeinternals.format.classfile.ConstantUtf8Info;
  */
 final class JTreeCPInfo {
 
-    private JTreeCPInfo(){
+    private JTreeCPInfo() {
     }
 
     public static void generateTreeNode(final DefaultMutableTreeNode rootNode, final AbstractCPInfo cp_info)
@@ -85,6 +88,18 @@ final class JTreeCPInfo {
 
             case AbstractCPInfo.CONSTANT_NameAndType:
                 JTreeCPInfo.generateTreeNode(rootNode, (ConstantNameAndTypeInfo) cp_info);
+                break;
+
+            case AbstractCPInfo.CONSTANT_MethodHandle:
+                JTreeCPInfo.generateTreeNode(rootNode, (ConstantMethodHandleInfo) cp_info);
+                break;
+
+            case AbstractCPInfo.CONSTANT_MethodType:
+                JTreeCPInfo.generateTreeNode(rootNode, (ConstantMethodTypeInfo) cp_info);
+                break;
+
+            case AbstractCPInfo.CONSTANT_InvokeDynamic:
+                JTreeCPInfo.generateTreeNode(rootNode, (ConstantInvokeDynamicInfo) cp_info);
                 break;
 
             default:
@@ -222,5 +237,43 @@ final class JTreeCPInfo {
                 startPos + 3,
                 2,
                 "descriptor_index: " + nameAndTypeInfo.getDescriptorIndex())));
+    }
+
+    private static void generateTreeNode(final DefaultMutableTreeNode rootNode, final ConstantMethodHandleInfo info)
+            throws InvalidTreeNodeException {
+        final int startPos = info.getStartPos();
+
+        rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
+                startPos + 1,
+                1,
+                "reference_kind: " + info.getReferenceKind())));
+        rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
+                startPos + 2,
+                2,
+                "reference_index: " + info.getReferenceKind())));
+    }
+
+    private static void generateTreeNode(final DefaultMutableTreeNode rootNode, final ConstantMethodTypeInfo info)
+            throws InvalidTreeNodeException {
+        final int startPos = info.getStartPos();
+
+        rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
+                startPos + 1,
+                2,
+                "descriptor_index: " + info.getDescriptorIndex())));
+    }
+
+    private static void generateTreeNode(final DefaultMutableTreeNode rootNode, final ConstantInvokeDynamicInfo info)
+            throws InvalidTreeNodeException {
+        final int startPos = info.getStartPos();
+
+        rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
+                startPos + 1,
+                2,
+                "bootstrap_method_attr_index: " + info.getBootstrapMethodAttrIndex())));
+        rootNode.add(new DefaultMutableTreeNode(new JTreeNodeClassComponent(
+                startPos + 3,
+                2,
+                "name_and_type_index: " + info.getNameAndTypeIndex())));
     }
 }

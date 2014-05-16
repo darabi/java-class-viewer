@@ -8,6 +8,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.PosDataInputStream;
 
 /**
  * The class for the {@code CONSTANT_Float_info} structure in constant pool.

@@ -35,6 +35,8 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     /**
      * Create a sub {@link PosDataInputStream}, which starts from
      * <code>offset</code>.
+     * @param in
+     * @param offset
      */
     public PosDataInputStream(final PosByteArrayInputStream in, int offset) {
         super(in);
@@ -46,6 +48,8 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * <code>startPos</code> of original stream, with length
      * <code>length</code>.
      *
+     * @param startPos
+     * @param length
      * @return A partial {@link PosDataInputStream} object
      */
     public PosDataInputStream getPartialStream(int startPos, int length) {
@@ -116,6 +120,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
 
     ///////////////////////////////////////////////////////////////////////////
     // Interface Methods
+    @Override
     public int readUnsignedShort_LittleEndian() throws IOException {
         int ch1 = this.in.read();
         int ch2 = this.in.read();
@@ -125,6 +130,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         return (ch2 << 8) + (ch1);
     }
 
+    @Override
     public int readInt_LittleEndian() throws IOException {
         int ch1 = this.in.read();
         int ch2 = this.in.read();
@@ -178,6 +184,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
                 + ((readBuffer[7] & 255)));
     }
 
+    @Override
     public String readASCII(int length) throws IOException {
         if (length <= 0) {
             throw new IllegalArgumentException(
@@ -191,6 +198,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         return sb.toString();
     }
 
+    @Override
     public String readASCII() throws IOException {
         return this.readASCIIUntil((byte) 0);
     }
@@ -199,7 +207,10 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * Read current byte array as ASCII string until
      * <code>byte</code>
      * <code>end</code>.
+     * @param end
+     * @throws java.io.IOException
      */
+    @Override
     public String readASCIIUntil(byte end) throws IOException {
         byte b;
         StringBuilder sb = new StringBuilder(100);
@@ -223,6 +234,9 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * Read current byte array as ASCII string until any
      * <code>byte</code> in array
      * <code>end</code>.
+     * @param end
+     * @return 
+     * @throws java.io.IOException
      */
     public String readASCIIUntil(byte... end) throws IOException {
         if (end == null || end.length < 1) {
@@ -250,6 +264,8 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
     /**
      * Read current byte array as ASCII string until a {@link NEWLINE} flag
      * found.
+     * @return 
+     * @throws java.io.IOException
      */
     public ASCIILine readASCIILine() throws IOException {
         int nlLen = 1;
@@ -277,6 +293,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
         return result;
     }
 
+    @Override
     public byte[] readBinary() throws IOException {
         int size = this.getBuf().length - this.getPos() + this.offset + 1;
         byte[] big = new byte[size];
@@ -314,6 +331,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      *
      * @see PosByteArrayInputStream
      */
+    @Override
     public int backward(int i) {
         int result = -1;
 
@@ -338,6 +356,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * @see PosByteArrayInputStream
      * @return the new position, or -1 if <code>b</code> not found
      */
+    @Override
     public int backwardTo(byte b) {
         int result = -1;
 
@@ -367,6 +386,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      * only, otherwise
      * <code>-1</code> is returned.
      *
+     * @param b
      * @see PosByteArrayInputStream
      * @return the new position, or -1 if <code>b</code> not found
      */
@@ -401,6 +421,7 @@ public class PosDataInputStream extends DataInputStream implements DataInputEx {
      *
      * @see PosByteArrayInputStream
      */
+    @Override
     public int backwardTo(byte[] b) {
         int result = -1;
 
