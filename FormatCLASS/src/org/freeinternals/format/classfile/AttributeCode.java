@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -174,7 +175,7 @@ public class AttributeCode extends AttributeInfo {
      * @author Amos Shi
      * @since JDK 6.0
      */
-    public final class ExceptionTable extends ClassComponent {
+    public final class ExceptionTable extends FileComponent {
 
         private transient final u2 start_pc;
         private transient final u2 end_pc;

@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -95,7 +96,7 @@ public class AttributeRuntimeVisibleAnnotations extends AttributeInfo {
      *
      * @author Amos Shi
      */
-    public final class Annotation extends ClassComponent {
+    public final class Annotation extends FileComponent {
 
         private transient final u2 type_index;
         private transient final u2 num_element_value_pairs;
@@ -129,7 +130,7 @@ public class AttributeRuntimeVisibleAnnotations extends AttributeInfo {
 
     }
 
-    public final class ElementValuePair extends ClassComponent {
+    public final class ElementValuePair extends FileComponent {
 
     }
 

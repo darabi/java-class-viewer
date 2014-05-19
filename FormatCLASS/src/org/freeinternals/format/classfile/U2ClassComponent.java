@@ -8,6 +8,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 
 /**
@@ -16,7 +17,7 @@ import org.freeinternals.commonlib.core.PosDataInputStream;
  * @author Amos Shi
  * @since JDK 6.0
  */
-public class U2ClassComponent extends ClassComponent
+public class U2ClassComponent extends FileComponent
 {
     u2 value;
 

@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -84,7 +85,7 @@ public class AttributeInnerClasses extends AttributeInfo {
      * @author Amos Shi
      * @since JDK 6.0
      */
-    public final class Class extends ClassComponent {
+    public final class Class extends FileComponent {
 
         private transient final u2 inner_class_info_index;
         private transient final u2 outer_class_info_index;

@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -29,7 +30,7 @@ import org.freeinternals.format.FileFormatException;
  * VM Spec:  Methods
  * </a>
  */
-public class MethodInfo extends ClassComponent {
+public class MethodInfo extends FileComponent {
 
     u2 access_flags;
     u2 name_index;

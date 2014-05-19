@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -86,7 +87,7 @@ public class AttributeLocalVariableTable extends AttributeInfo {
      * @since JDK 6.0
      * @see AttributeLocalVariableTable
      */
-    public final class LocalVariableTable extends ClassComponent {
+    public final class LocalVariableTable extends FileComponent {
 
         private transient final u2 start_pc;
         private transient final u2 length_lvt;

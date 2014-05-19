@@ -6,6 +6,8 @@
  */
 package org.freeinternals.format.classfile;
 
+import org.freeinternals.commonlib.core.FileComponent;
+
 /**
  * The super class for constant pool items in class file. All constant pool
  * items have the following format:
@@ -25,7 +27,7 @@ package org.freeinternals.format.classfile;
  * VM Spec: The Constant Pool
  * </a>
  */
-public abstract class AbstractCPInfo extends ClassComponent {
+public abstract class AbstractCPInfo extends FileComponent {
 
     /**
      * The value for constant type {@code CONSTANT_Utf8}.

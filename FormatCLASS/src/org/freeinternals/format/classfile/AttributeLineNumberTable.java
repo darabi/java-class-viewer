@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -83,7 +84,7 @@ public class AttributeLineNumberTable extends AttributeInfo {
      * @since JDK 6.0
      * @see AttributeLineNumberTable
      */
-    public final class LineNumberTable extends ClassComponent {
+    public final class LineNumberTable extends FileComponent {
 
         private transient final u2 start_pc;
         private transient final u2 line_number;

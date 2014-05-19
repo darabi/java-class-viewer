@@ -7,6 +7,7 @@
 package org.freeinternals.format.classfile;
 
 import java.io.IOException;
+import org.freeinternals.commonlib.core.FileComponent;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
@@ -29,7 +30,7 @@ import org.freeinternals.format.FileFormatException;
  * VM Spec: Attributes
  * </a>
  */
-public class AttributeInfo extends ClassComponent {
+public class AttributeInfo extends FileComponent {
 
     /**
      * The name for {@code ConstantValue} attribute type.
