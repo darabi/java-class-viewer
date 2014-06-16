@@ -12,7 +12,7 @@ package org.freeinternals.format.classfile;
  * @author Amos Shi
  * @since JDK 6.0
  */
-class u1 {
+public class u1 {
     public static final short MIN_VALUE = 0;
     public static final short MAX_VALUE = 0xFF;
 

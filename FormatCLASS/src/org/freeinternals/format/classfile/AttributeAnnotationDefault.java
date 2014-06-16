@@ -9,8 +9,6 @@ package org.freeinternals.format.classfile;
 import org.freeinternals.commonlib.core.PosDataInputStream;
 import org.freeinternals.format.FileFormatException;
 
-
-
 /**
  * The {@code AnnotationDefault} attribute is a variable-length attribute in the
  * {@code attributes} table of certain {@code method_info} structures, namely
@@ -40,19 +38,26 @@ public class AttributeAnnotationDefault extends AttributeInfo {
      * type element whose default value is represented by this AnnotationDefault
      * attribute.
      */
-    //private transient final AttributeAnnotationElementValue default_value;
+    private transient final AttributeSubElementValue default_value;
 
-    AttributeAnnotationDefault(final u2 nameIndex, final String type, final PosDataInputStream posDataInputStream, final AbstractCPInfo[] cp)
+    AttributeAnnotationDefault(
+            final u2 nameIndex,
+            final String type,
+            final PosDataInputStream posDataInputStream,
+            final AbstractCPInfo[] cp)
             throws java.io.IOException, FileFormatException {
-        super(nameIndex, type, posDataInputStream);
 
-        this.attribute_name_index = new u2();
-        this.attribute_name_index.value = posDataInputStream.readUnsignedShort();
-        this.attribute_length = new u4();
-        this.attribute_length.value = posDataInputStream.readInt();
-        //this.default_value = new AttributeAnnotationElementValue(posDataInputStream);
-        //
-        
+        super(nameIndex, type, posDataInputStream);
+        this.default_value = new AttributeSubElementValue(posDataInputStream);
         super.checkSize(posDataInputStream.getPos());
+    }
+
+    /**
+     * Get the value of {@code default_value}.
+     *
+     * @return The value of {@code default_value}
+     */
+    public AttributeSubElementValue getDefaultValue() {
+        return this.default_value;
     }
 }

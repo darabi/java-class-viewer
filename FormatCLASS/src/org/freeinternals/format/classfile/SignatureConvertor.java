@@ -33,7 +33,7 @@ final class SignatureConvertor {
         String returnValue = null;
         final String returnType = signature.substring(bracketEnd + 1);
         if ("V".equals(returnType)) {
-            returnValue = "void";
+            returnValue = JavaLangSpec.Keyword.kw_void;
         } else {
             returnValue = SignatureConvertor.signature2Type(returnType);
         }
@@ -61,12 +61,11 @@ final class SignatureConvertor {
         //   '[': omited
         //   Primitive type; end
         //   'L': find the next ';', parse it; then end
-
         final StringBuilder sbResult = new StringBuilder(signature.length() + signature.length());
         sbResult.append('(');
 
         StringBuilder sbParameter = new StringBuilder(sbResult.capacity());
-        int commaIndex = 0;
+        int commaIndex;
 
         String rawParameters = signature.substring(1, bracketEnd + 1);
         int parametersCounter = 0;
@@ -75,8 +74,8 @@ final class SignatureConvertor {
                 sbParameter.append("[]");
                 rawParameters = rawParameters.substring(1);
             } else {
-                if (SignatureConvertor.isPrimitiveTypes(rawParameters.charAt(0))) {
-                    sbParameter = sbParameter.insert(0, SignatureConvertor.extractPrimitiveTypes(rawParameters.charAt(0)));
+                if (AttributeSignature.BaseType.isPrimitiveType(rawParameters.charAt(0))) {
+                    sbParameter = sbParameter.insert(0, AttributeSignature.BaseType.extractPrimitiveType(rawParameters.charAt(0)));
                     sbResult.append(sbParameter);
                     parametersCounter++;
                     sbParameter = sbParameter.delete(0, sbParameter.capacity());
@@ -138,7 +137,7 @@ final class SignatureConvertor {
             throw new IllegalArgumentException("'signature' should not be null.");
         }
 
-        String returnValue = null;
+        String returnValue;
         final int signatureLength = signature.length();
         switch (signatureLength) {
             case 0:
@@ -146,83 +145,11 @@ final class SignatureConvertor {
                 throw new SignatureException(String.format("Sinagure length cannot be 0, or 2. Current 'signature' length=%d.", signatureLength));
 
             case 1:
-                returnValue = extractPrimitiveTypes(signature.charAt(0));
+                returnValue = AttributeSignature.BaseType.extractPrimitiveType(signature.charAt(0));
                 break;
 
             default:
                 returnValue = extractClassFullSignature(signature);
-        }
-
-        return returnValue;
-    }
-
-    // Primitive types;
-    //
-    //  Z    boolean
-    //  B    byte
-    //  C    char
-    //  S    short
-    //  I    int
-    //  J    long
-    //  F    float
-    //  D    double
-    private static String extractPrimitiveTypes(final char typeSignature) {
-        String javaType = null;
-        switch (typeSignature) {
-            case 'B':
-                javaType = "byte";
-                break;
-
-            case 'C':
-                javaType = "char";
-                break;
-
-            case 'D':
-                javaType = "double";
-                break;
-
-            case 'F':
-                javaType = "float";
-                break;
-
-            case 'I':
-                javaType = "int";
-                break;
-
-            case 'J':
-                javaType = "long";
-                break;
-
-            case 'S':
-                javaType = "short";
-                break;
-
-            case 'Z':
-                javaType = "boolean ";
-                break;
-
-            default:
-                javaType = "[ERROR: unknown primitive type]";
-        }
-
-        return javaType;
-    }
-
-    private static Boolean isPrimitiveTypes(final char typeSignature) {
-        Boolean returnValue = false;
-        switch (typeSignature) {
-            case 'B':
-            case 'C':
-            case 'D':
-            case 'F':
-            case 'I':
-            case 'J':
-            case 'S':
-            case 'Z':
-                returnValue = true;
-                break;
-            default:
-                returnValue = false;
         }
 
         return returnValue;
@@ -244,8 +171,7 @@ final class SignatureConvertor {
             throw new SignatureException(String.format("Fully-qualified class sinagure format is not 'L-xxx-;'. it is '%s'.", classSignature));
         }
 
-        String returnValue = null;
-        returnValue = classSignature.substring(1, length - 1);
+        String returnValue = classSignature.substring(1, length - 1);
         return returnValue.replace('/', '.');
     }
 

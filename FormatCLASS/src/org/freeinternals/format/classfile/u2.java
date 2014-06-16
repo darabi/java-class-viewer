@@ -11,7 +11,7 @@ package org.freeinternals.format.classfile;
  * @author Amos Shi
  * @since JDK 6.0
  */
-class u2 {
+public class u2 {
 
     public static final int MIN_VALUE = 0;
     public static final int MAX_VALUE = 0xFFFF;
