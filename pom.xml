@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.freeinternals</groupId>
+	<artifactId>parent</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>freeinternals Aggregator POM</name>
+	<description>freeinternals Aggregator POM</description>
+
+	<scm>
+		<connection>scm:git:ssh://git@github.com:darabi/java-class-viewer.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:darabi/java-class-viewer.git</developerConnection>
+		<url>https://github.com/darabi/java-class-viewer</url>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<modules>
+		<module>CommonLib</module>
+		<module>FormatBMP</module>
+		<module>FormatCLASS</module>
+		<module>FormatJPEG</module>
+		<module>FormatPDF</module>
+		<module>FormatPNG</module>
+		<module>FormatZIP</module>
+		<module>BinaryInternalsViewer</module>
+		<module>JavaClassViewer</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.16</version>
+					<configuration>
+						<!-- Excludes integration tests when unit tests are run. -->
+						<excludes>
+							<exclude>**/integration/**</exclude>
+						</excludes>
+						<systemPropertyVariables>
+							<prime.env>junit</prime.env>
+							<prime.logdir>${project.build.directory}/log</prime.logdir>
+							<prime.confdir>${basedir}/src/main/resources</prime.confdir>
+						</systemPropertyVariables>
+						<argLine>-Dfile.encoding=UTF-8</argLine> 
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>appassembler-maven-plugin</artifactId>
+					<version>1.5</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
+
+<!--
+    Local Variables:
+    mode:nxml
+    nxml-child-indent:1
+    tab-width:2
+    indent-tabs-mode:t
+    End:
+-->
