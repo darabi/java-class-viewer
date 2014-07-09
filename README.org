@@ -1,0 +1,10 @@
+
+* Java Class Viewer
+
+cf. http://www.codeproject.com/Articles/35915/Java-Class-Viewer
+
+original repo: https://code.google.com/p/freeinternals/
+
+This fork is to provide a maven build as I needed maven artifacts for
+a small project.
+
